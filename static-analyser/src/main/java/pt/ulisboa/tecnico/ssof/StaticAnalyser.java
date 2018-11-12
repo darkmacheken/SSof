@@ -17,31 +17,36 @@ import pt.ulisboa.tecnico.ssof.structure.Function;
 
 public class StaticAnalyser {
 	
-	final static Logger logger = Logger.getLogger(StaticAnalyser.class);
+	private static final Logger logger = Logger.getLogger(StaticAnalyser.class);
 	
     public static void main( String[] args ) {
 		if(args.length != 1) {
 			logger.fatal("One parameter is expected but " + args.length + " were given.");
 	        System.exit(-1);
 		}
-		
+
+		StringBuilder jsonObject = new StringBuilder();
 		String fileName = args[0];
-		String jsonObject = new String();
 	    try {
 	    	Path path = Paths.get(fileName).toAbsolutePath();
-	        jsonObject = new String(Files.readAllBytes(path));
-	    }
-	    catch (IOException e) {
+	        jsonObject.append(new String(Files.readAllBytes(path)));
+	    } catch (IOException e) {
 	        logger.fatal("The file: " + fileName + " doesn't exists.");
 	        System.exit(-1);
 	    }
-	    
-	    Map<String,Function> functions = StaticAnalyser.parseJsonInput(jsonObject);
+	    Map<String,Function> functions = StaticAnalyser.parseJsonInput(jsonObject.toString());
     }
 
+	/**
+	 * This function receives a string containing the jsonObject and creates a map with the
+	 * existing functions, each one with the corresponding variables (List<Variable>) and 
+	 * instructions (List<Instruction>).
+	 * @param jsonObject
+	 * @return map of the existing functions
+	 */
 	private static Map<String,Function> parseJsonInput(String jsonObject) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String,Function> functions = new LinkedHashMap<String,Function>();
+		Map<String,Function> functions = new LinkedHashMap<>();
 		try {
 			functions = objectMapper.readValue(jsonObject, new TypeReference<Map<String,Function>>(){});
 		} catch (IOException e) {

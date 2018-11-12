@@ -6,24 +6,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Function {
-	private int nIntructions;
+	private int numberInstructions;
 	private List<Variable> variables;
 	private List<Instruction> instructions;
 	
 	@JsonCreator
-	public Function(@JsonProperty("Ninstructions") int nInstructions, 
+	public Function(@JsonProperty("Ninstructions") int numberInstructions, 
 			@JsonProperty("variables") List<Variable> variables, 
 			@JsonProperty("instructions") List<Instruction> instructions) {
-		this.nIntructions = nInstructions;
+		this.numberInstructions = numberInstructions;
 		this.variables = variables;
 		this.instructions = instructions;
 	}
 	
-	public int getnIntructions() {
-		return nIntructions;
+	public int getNumberInstructions() {
+		return numberInstructions;
 	}
 		
-	public List<Variable>  getVariables() {
+	public List<Variable> getVariables() {
 		return variables;
 	}
 	

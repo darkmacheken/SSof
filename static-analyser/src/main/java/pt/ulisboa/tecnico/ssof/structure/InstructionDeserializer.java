@@ -36,62 +36,62 @@ public class InstructionDeserializer extends StdDeserializer<Instruction> {
         this(null); 
     } 
  
-    public InstructionDeserializer(Class<?> vc) { 
-        super(vc); 
+    public InstructionDeserializer(Class<?> valueClass) { 
+        super(valueClass); 
     }
     
 	@Override
-	public Instruction deserialize(JsonParser jp, DeserializationContext ctxt)
+	public Instruction deserialize(JsonParser jsonParser, DeserializationContext context)
 			throws IOException, JsonProcessingException {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode node = jp.getCodec().readTree(jp);
+		JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 		
 		/* get all values from json object (node) */
 		String operation = node.get("op").asText();
-		int pos = (Integer) ((IntNode) node.get("pos")).numberValue();
+		int position = (Integer) ((IntNode) node.get("pos")).numberValue();
         String address = node.get("address").asText();
-        JsonNode argsNode = node.get("args");
-        Map<String,String> args = new LinkedHashMap<String,String>();
+        JsonNode argumentsNode = node.get("args");
+        Map<String,String> arguments = new LinkedHashMap<>();
 
         /*check if the operation has args*/
-        if(argsNode != null) {
-        	args = objectMapper.readValue(argsNode.toString(), new TypeReference<Map<String,String>>(){});
+        if(argumentsNode != null) {
+        	arguments = objectMapper.readValue(argumentsNode.toString(), new TypeReference<Map<String,String>>(){});
         }
        
        /* Instantiate class given the class name (operation) */
        switch (operation) {
        	case "push":
-        	return new Push(pos, address, args.get("value"));
+        	return new Push(position, address, arguments.get("value"));
        	case "mov":
-       		return new Mov(pos, address, args.get("dest"), args.get("value"));
+       		return new Mov(position, address, arguments.get("dest"), arguments.get("value"));
        	case "lea":
-       		return new Lea(pos, address, args.get("dest"), args.get("value"));
+       		return new Lea(position, address, arguments.get("dest"), arguments.get("value"));
        	case "call":
-       		return new Call(pos, address, args.get("fname"), args.get("address"));
+       		return new Call(position, address, arguments.get("fnname"), arguments.get("address"));
        	case "nop":
-       		return new Nop(pos, address);
+       		return new Nop(position, address);
        	case "add": 
-       		return new Add(pos, address, args.get("dest"), args.get("value"));
+       		return new Add(position, address, arguments.get("dest"), arguments.get("value"));
     	case "sub":
-       		return new Sub(pos, address, args.get("dest"), args.get("value"));
+       		return new Sub(position, address, arguments.get("dest"), arguments.get("value"));
        	case "cmp":
-       		return new Cmp(pos, address, args.get("arg0"), args.get("arg1"));
+       		return new Cmp(position, address, arguments.get("arg0"), arguments.get("arg1"));
        	case "test":
-       		return new Test(pos, address, args.get("arg0"), args.get("arg1"));
+       		return new Test(position, address, arguments.get("arg0"), arguments.get("arg1"));
        	case "je":
-       		return new Je(pos, address, args.get("address"));
+       		return new Je(position, address, arguments.get("address"));
        	case "jmp":
-       		return new Jmp(pos, address, args.get("address"));
+       		return new Jmp(position, address, arguments.get("address"));
        	case "jne":
-       		return new Jne(pos, address, args.get("address"));
+       		return new Jne(position, address, arguments.get("address"));
     	case "leave":
-       		return new Leave(pos, address);
+       		return new Leave(position, address);
        	case "ret":
-       		return new Ret(pos, address);
+       		return new Ret(position, address);
+       	default:
+       		return null;
         }
-     
-        return null;
 	}
 
 }

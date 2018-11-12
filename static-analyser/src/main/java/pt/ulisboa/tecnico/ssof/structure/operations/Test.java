@@ -3,21 +3,21 @@ package pt.ulisboa.tecnico.ssof.structure.operations;
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
 
 public class Test extends Instruction {
-	private String arg0;
-	private String arg1;
+	private String firstArgument;
+	private String secondArgument;
 
-	public Test(int position, String address, String arg0, String arg1) {
+	public Test(int position, String address, String firstArgument, String secondArgument) {
 		super(position, address);
-		this.arg0 = arg0;
-		this.arg1 = arg1;
+		this.firstArgument = firstArgument;
+		this.secondArgument = secondArgument;
 	}
 
-	public String getArg0() {
-		return arg0;
+	public String getFirstArgument() {
+		return firstArgument;
 	}
 
-	public String getArg1() {
-		return arg1;
+	public String getSecondArgument() {
+		return secondArgument;
 	}
 
 }
