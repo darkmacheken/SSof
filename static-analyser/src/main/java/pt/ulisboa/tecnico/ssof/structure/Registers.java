@@ -13,32 +13,12 @@ public class Registers {
 	private static final Long LSB_16 = 0x0000FFFFL;
 	private static final Long LSB_8 = 0x000000FFL;
 
-	private final Map<String, Long> registers;
+	private final Map<String, Long> registersBank;
 	private static final Map<String, MutablePair<String, Long>> registersMap = createRegistersMap();
 
 	public Registers() {
-		this.registers = new HashMap<>();
+		this.registersBank = new HashMap<>();
 		initializeRegisters();
-	}
-	
-	private void initializeRegisters() {		
-		registers.put("rax", 0L);
-		registers.put("rbx", 0L);
-		registers.put("rcx", 0L);
-		registers.put("rdx", 0L);
-		registers.put("rsi", 0L);
-		registers.put("rdi", 0L);
-		registers.put("rbp", 0L);
-		registers.put("rsp", 0L);
-		registers.put("rip", 0L);
-		registers.put("r8", 0L);
-		registers.put("r9", 0L);
-		registers.put("r10", 0L);
-		registers.put("r11", 0L);
-		registers.put("r12", 0L);
-		registers.put("r13", 0L);
-		registers.put("r14", 0L);
-		registers.put("r15", 0L);
 	}
 	
 	public void write(String register, Long value) {
@@ -54,11 +34,11 @@ public class Registers {
 				registerMapValue.getRight().equals(LSB_64)) {
 			valueToWrite = registerMapValue.getRight() & value;
 		} else { /* if register is 8 or 16 bits */
-			Long registerValue = registers.get(registerMapValue.getLeft());
+			Long registerValue = registersBank.get(registerMapValue.getLeft());
 			/* value is the new value in the selected bits and the previous value in the other bits (msb) */
 			valueToWrite = (registerMapValue.getRight() & value) + (~registerMapValue.getRight() & registerValue);
 		}
-		this.registers.put(registerMapValue.getLeft(), valueToWrite);
+		this.registersBank.put(registerMapValue.getLeft(), valueToWrite);
 	}
 	
 	public Long read(String register) {
@@ -68,8 +48,28 @@ public class Registers {
 			System.exit(-1);
 		}
 		
-		Long registerValue = registers.get(registerMapValue.getLeft());
+		Long registerValue = registersBank.get(registerMapValue.getLeft());
 		return registerMapValue.getRight() & registerValue;
+	}
+	
+	private void initializeRegisters() {
+		registersBank.put("rax", 0L);
+		registersBank.put("rbx", 0L);
+		registersBank.put("rcx", 0L);
+		registersBank.put("rdx", 0L);
+		registersBank.put("rsi", 0L);
+		registersBank.put("rdi", 0L);
+		registersBank.put("rbp", 0L);
+		registersBank.put("rsp", 0L);
+		registersBank.put("rip", 0L);
+		registersBank.put("r8", 0L);
+		registersBank.put("r9", 0L);
+		registersBank.put("r10", 0L);
+		registersBank.put("r11", 0L);
+		registersBank.put("r12", 0L);
+		registersBank.put("r13", 0L);
+		registersBank.put("r14", 0L);
+		registersBank.put("r15", 0L);
 	}
 	
 	private static Map<String, MutablePair<String, Long>> createRegistersMap() {
