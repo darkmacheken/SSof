@@ -7,116 +7,51 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.log4j.Logger;
 
 public class Registers {
-	
 	private static final Logger logger = Logger.getLogger(Registers.class);
+	private static final Long LSB_64 = 0xFFFFFFFFL;
+	private static final Long LSB_32 = 0x00FFFFFFL;
+	private static final Long LSB_16 = 0x0000FFFFL;
+	private static final Long LSB_8 = 0x000000FFL;
 
 	private final Map<String, Long> registers;
 	private static final Map<String, MutablePair<String, Long>> registersMap = createRegistersMap();
 
 	public Registers() {
 		this.registers = new HashMap<>();
+		initializeRegisters();
 	}
 	
-	public static Map<String, MutablePair<String, Long>> createRegistersMap() {
-		Map<String, MutablePair<String, Long>> registersMap = new HashMap<>();
-		
-		/* RAX */
-		registersMap.put("rax", new MutablePair<String, Long>("rax", 0xFFFFFFFFL));
-		registersMap.put("eax", new MutablePair<String, Long>("rax", 0x00FFFFFFL));
-		registersMap.put("ax", new MutablePair<String, Long>("rax", 0x0000FFFFL));
-		registersMap.put("al", new MutablePair<String, Long>("rax", 0x000000FFL));
-		/* RBX */
-		registersMap.put("rbx", new MutablePair<String, Long>("rbx", 0xFFFFFFFFL));
-		registersMap.put("ebx", new MutablePair<String, Long>("rbx", 0x00FFFFFFL));
-		registersMap.put("bx", new MutablePair<String, Long>("rbx", 0x0000FFFFL));
-		registersMap.put("bl", new MutablePair<String, Long>("rbx", 0x000000FFL));
-		/* RCX */
-		registersMap.put("rcx", new MutablePair<String, Long>("rcx", 0xFFFFFFFFL));
-		registersMap.put("ecx", new MutablePair<String, Long>("rcx", 0x00FFFFFFL));
-		registersMap.put("cx", new MutablePair<String, Long>("rcx", 0x0000FFFFL));
-		registersMap.put("cl", new MutablePair<String, Long>("rcx", 0x000000FFL));
-		/* RDX */
-		registersMap.put("rdx", new MutablePair<String, Long>("rdx", 0xFFFFFFFFL));
-		registersMap.put("edx", new MutablePair<String, Long>("rdx", 0x00FFFFFFL));
-		registersMap.put("dx", new MutablePair<String, Long>("rdx", 0x0000FFFFL));
-		registersMap.put("dl", new MutablePair<String, Long>("rdx", 0x000000FFL));
-		/* RSI */
-		registersMap.put("rsi", new MutablePair<String, Long>("rsi", 0xFFFFFFFFL));
-		registersMap.put("esi", new MutablePair<String, Long>("rsi", 0x00FFFFFFL));
-		registersMap.put("si", new MutablePair<String, Long>("rsi", 0x0000FFFFL));
-		registersMap.put("sil", new MutablePair<String, Long>("rsi", 0x000000FFL));
-		/* RDI */
-		registersMap.put("rdi", new MutablePair<String, Long>("rdi", 0xFFFFFFFFL));
-		registersMap.put("edi", new MutablePair<String, Long>("rdi", 0x00FFFFFFL));
-		registersMap.put("di", new MutablePair<String, Long>("rdi", 0x0000FFFFL));
-		registersMap.put("dil", new MutablePair<String, Long>("rdi", 0x000000FFL));
-		/* RBP */
-		registersMap.put("rbp", new MutablePair<String, Long>("rbp", 0xFFFFFFFFL));
-		registersMap.put("ebp", new MutablePair<String, Long>("rbp", 0x00FFFFFFL));
-		registersMap.put("bp", new MutablePair<String, Long>("rbp", 0x0000FFFFL));
-		registersMap.put("bpl", new MutablePair<String, Long>("rbp", 0x000000FFL));
-		/* RSP */
-		registersMap.put("rsp", new MutablePair<String, Long>("rsp", 0xFFFFFFFFL));
-		registersMap.put("esp", new MutablePair<String, Long>("rsp", 0x00FFFFFFL));
-		registersMap.put("sp", new MutablePair<String, Long>("rsp", 0x0000FFFFL));
-		registersMap.put("spl", new MutablePair<String, Long>("rsp", 0x000000FFL));
-		/* RIP */
-		registersMap.put("rip", new MutablePair<String, Long>("rip", 0xFFFFFFFFL));
-		registersMap.put("eip", new MutablePair<String, Long>("rip", 0x00FFFFFFL));
-		/* R8 */
-		registersMap.put("r8", new MutablePair<String, Long>("r8", 0xFFFFFFFFL));
-		registersMap.put("r8d", new MutablePair<String, Long>("r8", 0x00FFFFFFL));
-		registersMap.put("r8w", new MutablePair<String, Long>("r8", 0x0000FFFFL));
-		registersMap.put("r8b", new MutablePair<String, Long>("r8", 0x000000FFL));
-		/* R9 */
-		registersMap.put("r9", new MutablePair<String, Long>("r9", 0xFFFFFFFFL));
-		registersMap.put("r9d", new MutablePair<String, Long>("r9", 0x00FFFFFFL));
-		registersMap.put("r9w", new MutablePair<String, Long>("r9", 0x0000FFFFL));
-		registersMap.put("r9b", new MutablePair<String, Long>("r9", 0x000000FFL));
-		/* R10 */
-		registersMap.put("r10", new MutablePair<String, Long>("r10", 0xFFFFFFFFL));
-		registersMap.put("r10d", new MutablePair<String, Long>("r10", 0x00FFFFFFL));
-		registersMap.put("r10w", new MutablePair<String, Long>("r10", 0x0000FFFFL));
-		registersMap.put("r10b", new MutablePair<String, Long>("r10", 0x000000FFL));
-		/* R11 */
-		registersMap.put("r11", new MutablePair<String, Long>("r11", 0xFFFFFFFFL));
-		registersMap.put("r11d", new MutablePair<String, Long>("r11", 0x00FFFFFFL));
-		registersMap.put("r11w", new MutablePair<String, Long>("r11", 0x0000FFFFL));
-		registersMap.put("r11b", new MutablePair<String, Long>("r11", 0x000000FFL));
-		/* R12 */
-		registersMap.put("r12", new MutablePair<String, Long>("r12", 0xFFFFFFFFL));
-		registersMap.put("r12d", new MutablePair<String, Long>("r12", 0x00FFFFFFL));
-		registersMap.put("r12w", new MutablePair<String, Long>("r12", 0x0000FFFFL));
-		registersMap.put("r12b", new MutablePair<String, Long>("r12", 0x000000FFL));
-		/* R13 */
-		registersMap.put("r13", new MutablePair<String, Long>("r13", 0xFFFFFFFFL));
-		registersMap.put("r13d", new MutablePair<String, Long>("r13", 0x00FFFFFFL));
-		registersMap.put("r13w", new MutablePair<String, Long>("r13", 0x0000FFFFL));
-		registersMap.put("r13b", new MutablePair<String, Long>("r13", 0x000000FFL));
-		/* R14 */
-		registersMap.put("r14", new MutablePair<String, Long>("r14", 0xFFFFFFFFL));
-		registersMap.put("r14d", new MutablePair<String, Long>("r14", 0x00FFFFFFL));
-		registersMap.put("r14w", new MutablePair<String, Long>("r14", 0x0000FFFFL));
-		registersMap.put("r14b", new MutablePair<String, Long>("r14", 0x000000FFL));
-		/* R15 */
-		registersMap.put("r15", new MutablePair<String, Long>("r15", 0xFFFFFFFFL));
-		registersMap.put("r15d", new MutablePair<String, Long>("r15", 0x00FFFFFFL));
-		registersMap.put("r15w", new MutablePair<String, Long>("r15", 0x0000FFFFL));
-		registersMap.put("r15b", new MutablePair<String, Long>("r15", 0x000000FFL));
-		
-		return registersMap;
+	private void initializeRegisters() {		
+		registers.put("rax", 0L);
+		registers.put("rbx", 0L);
+		registers.put("rcx", 0L);
+		registers.put("rdx", 0L);
+		registers.put("rsi", 0L);
+		registers.put("rdi", 0L);
+		registers.put("rbp", 0L);
+		registers.put("rsp", 0L);
+		registers.put("rip", 0L);
+		registers.put("r8", 0L);
+		registers.put("r9", 0L);
+		registers.put("r10", 0L);
+		registers.put("r11", 0L);
+		registers.put("r12", 0L);
+		registers.put("r13", 0L);
+		registers.put("r14", 0L);
+		registers.put("r15", 0L);
 	}
 	
 	public void write(String register, Long value) {
 		Long valueToWrite;
 		MutablePair<String, Long> registerMapValue = registersMap.get(register);
 		if(registerMapValue == null) {
-			logger.error("Unable to get " + register + " from registerMap");
+			logger.fatal("Unable to get " + register + " from registerMap");
+			System.exit(-1);
 		}
 		
 		/* if register is 32 or 64 bits */
-		if (registerMapValue.getRight().equals(0x00FFFFFFL) ||
-				registerMapValue.getRight().equals(0xFFFFFFFFL)) {
+		if (registerMapValue.getRight().equals(LSB_32) ||
+				registerMapValue.getRight().equals(LSB_64)) {
 			valueToWrite = registerMapValue.getRight() & value;
 		} else { /* if register is 8 or 16 bits */
 			Long registerValue = registers.get(registerMapValue.getLeft());
@@ -129,14 +64,102 @@ public class Registers {
 	public Long read(String register) {
 		MutablePair<String, Long> registerMapValue = registersMap.get(register);
 		if(registerMapValue == null) {
-			logger.error("Unable to get " + register + " from registerMap");
+			logger.fatal("Unable to get " + register + " from registerMap");
+			System.exit(-1);
 		}
 		
 		Long registerValue = registers.get(registerMapValue.getLeft());
 		return registerMapValue.getRight() & registerValue;
 	}
+	
+	private static Map<String, MutablePair<String, Long>> createRegistersMap() {
+		Map<String, MutablePair<String, Long>> registersMap = new HashMap<>();
+		
+		/* RAX */
+		registersMap.put("rax", new MutablePair<>("rax", LSB_64));
+		registersMap.put("eax", new MutablePair<>("rax", LSB_32));
+		registersMap.put("ax", new MutablePair<>("rax", LSB_16));
+		registersMap.put("al", new MutablePair<>("rax", LSB_8));
+		/* RBX */
+		registersMap.put("rbx", new MutablePair<>("rbx", LSB_64));
+		registersMap.put("ebx", new MutablePair<>("rbx", LSB_32));
+		registersMap.put("bx", new MutablePair<>("rbx", LSB_16));
+		registersMap.put("bl", new MutablePair<>("rbx", LSB_8));
+		/* RCX */
+		registersMap.put("rcx", new MutablePair<>("rcx", LSB_64));
+		registersMap.put("ecx", new MutablePair<>("rcx", LSB_32));
+		registersMap.put("cx", new MutablePair<>("rcx", LSB_16));
+		registersMap.put("cl", new MutablePair<>("rcx", LSB_8));
+		/* RDX */
+		registersMap.put("rdx", new MutablePair<>("rdx", LSB_64));
+		registersMap.put("edx", new MutablePair<>("rdx", LSB_32));
+		registersMap.put("dx", new MutablePair<>("rdx", LSB_16));
+		registersMap.put("dl", new MutablePair<>("rdx", LSB_8));
+		/* RSI */
+		registersMap.put("rsi", new MutablePair<>("rsi", LSB_64));
+		registersMap.put("esi", new MutablePair<>("rsi", LSB_32));
+		registersMap.put("si", new MutablePair<>("rsi", LSB_16));
+		registersMap.put("sil", new MutablePair<>("rsi", LSB_8));
+		/* RDI */
+		registersMap.put("rdi", new MutablePair<>("rdi", LSB_64));
+		registersMap.put("edi", new MutablePair<>("rdi", LSB_32));
+		registersMap.put("di", new MutablePair<>("rdi", LSB_16));
+		registersMap.put("dil", new MutablePair<>("rdi", LSB_8));
+		/* RBP */
+		registersMap.put("rbp", new MutablePair<>("rbp", LSB_64));
+		registersMap.put("ebp", new MutablePair<>("rbp", LSB_32));
+		registersMap.put("bp", new MutablePair<>("rbp", LSB_16));
+		registersMap.put("bpl", new MutablePair<>("rbp", LSB_8));
+		/* RSP */
+		registersMap.put("rsp", new MutablePair<>("rsp", LSB_64));
+		registersMap.put("esp", new MutablePair<>("rsp", LSB_32));
+		registersMap.put("sp", new MutablePair<>("rsp", LSB_16));
+		registersMap.put("spl", new MutablePair<>("rsp", LSB_8));
+		/* RIP */
+		registersMap.put("rip", new MutablePair<>("rip", LSB_64));
+		registersMap.put("eip", new MutablePair<>("rip", LSB_32));
+		/* R8 */
+		registersMap.put("r8", new MutablePair<>("r8", LSB_64));
+		registersMap.put("r8d", new MutablePair<>("r8", LSB_32));
+		registersMap.put("r8w", new MutablePair<>("r8", LSB_16));
+		registersMap.put("r8b", new MutablePair<>("r8", LSB_8));
+		/* R9 */
+		registersMap.put("r9", new MutablePair<>("r9", LSB_64));
+		registersMap.put("r9d", new MutablePair<>("r9", LSB_32));
+		registersMap.put("r9w", new MutablePair<>("r9", LSB_16));
+		registersMap.put("r9b", new MutablePair<>("r9", LSB_8));
+		/* R10 */
+		registersMap.put("r10", new MutablePair<>("r10", LSB_64));
+		registersMap.put("r10d", new MutablePair<>("r10", LSB_32));
+		registersMap.put("r10w", new MutablePair<>("r10", LSB_16));
+		registersMap.put("r10b", new MutablePair<>("r10", LSB_8));
+		/* R11 */
+		registersMap.put("r11", new MutablePair<>("r11", LSB_64));
+		registersMap.put("r11d", new MutablePair<>("r11", LSB_32));
+		registersMap.put("r11w", new MutablePair<>("r11", LSB_16));
+		registersMap.put("r11b", new MutablePair<>("r11", LSB_8));
+		/* R12 */
+		registersMap.put("r12", new MutablePair<>("r12", LSB_64));
+		registersMap.put("r12d", new MutablePair<>("r12", LSB_32));
+		registersMap.put("r12w", new MutablePair<>("r12", LSB_16));
+		registersMap.put("r12b", new MutablePair<>("r12", LSB_8));
+		/* R13 */
+		registersMap.put("r13", new MutablePair<>("r13", LSB_64));
+		registersMap.put("r13d", new MutablePair<>("r13", LSB_32));
+		registersMap.put("r13w", new MutablePair<>("r13", LSB_16));
+		registersMap.put("r13b", new MutablePair<>("r13", LSB_8));
+		/* R14 */
+		registersMap.put("r14", new MutablePair<>("r14", LSB_64));
+		registersMap.put("r14d", new MutablePair<>("r14", LSB_32));
+		registersMap.put("r14w", new MutablePair<>("r14", LSB_16));
+		registersMap.put("r14b", new MutablePair<>("r14", LSB_8));
+		/* R15 */
+		registersMap.put("r15", new MutablePair<>("r15", LSB_64));
+		registersMap.put("r15d", new MutablePair<>("r15", LSB_32));
+		registersMap.put("r15w", new MutablePair<>("r15", LSB_16));
+		registersMap.put("r15b", new MutablePair<>("r15", LSB_8));
+		
+		return registersMap;
+	}
+	
 }
-
-
-
-
