@@ -34,15 +34,11 @@ public class BasicBlock {
     }
 
     public void addInstruction(Instruction instruction){
-        instructions.add(instruction);
+        this.instructions.add(instruction);
     }
 
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public void addAdjacencyBlock(BasicBlock basicBlock){
