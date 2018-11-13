@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Sub extends Instruction {
 	private String destination;
@@ -20,4 +21,8 @@ public class Sub extends Instruction {
 		return value;
 	}
 
+	@Override
+	public void accept(Visitor visitor){
+		visitor.visitSub(this);
+	}
 }

@@ -1,9 +1,12 @@
-package pt.ulisboa.tecnico.ssof.structure;
+package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.structure.Variable;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Function {
 	private int numberInstructions;
@@ -30,4 +33,8 @@ public class Function {
 	public List<Instruction> getInstructions() {
 		return instructions;
 	}
+
+    public void accept(Visitor visitor){
+        visitor.visitFunction(this);
+    }
 }

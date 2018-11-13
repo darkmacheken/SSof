@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Cmp extends Instruction {
 	private String firstArgument ;
@@ -18,5 +19,10 @@ public class Cmp extends Instruction {
 
 	public String getSecondArgument() {
 		return secondArgument;
+	}
+
+	@Override
+	public void accept(Visitor visitor){
+		visitor.visitCmp(this);
 	}
 }
