@@ -276,7 +276,7 @@ public class StackMemory {
      * @param position is relative to the current RBP
      * @param numBytes number of bytes to write from the value
      * @param value is the value to write
-     * @return
+     * @return a list with all founded vulnerabilities.
      */
     public List<Vulnerability> writeValue(int position, int numBytes, Long value){
         if(numBytes <= 0 || numBytes > 8){
