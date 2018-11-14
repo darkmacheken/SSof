@@ -44,11 +44,10 @@ public final class JsonUtils {
     }
     
     /**
-     * This function receives a string containing the jsonObject and creates a map with the
-     * existing functions, each one with the corresponding variables (List<Variable>) and
-     * instructions (List<Instruction>).
-     * @param jsonObject
-     * @return map of the existing functions
+     * This function receives a string containing the desired fileName and the list of vulnerabilities
+     * (List<Vulnerability>) and produces a .json file with the found vulnerabilities.
+     * @param fileName
+     * @param vulnerabilities
      */
     public static void parseJsonOutput(String fileName, List<Vulnerability> vulnerabilities) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -59,10 +58,9 @@ public final class JsonUtils {
         try {
             String jsonObject = objectMapper.writer(prettyPrinter).writeValueAsString(vulnerabilities);
             StringBuilder file = new StringBuilder();
-            file.append(fileName).append(".json");
+            file.append(fileName).append(".output.json");
             Path path = Paths.get(file.toString()).toAbsolutePath();
             Files.write(path, jsonObject.getBytes());
-
         } catch (IOException e) {
             logger.fatal("Error parsing the json output.");
             System.exit(-1);

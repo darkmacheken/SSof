@@ -11,12 +11,16 @@ public class Vulnerabilities {
 	public Vulnerabilities() {
 		vulnerabilitiesList = new ArrayList<>();
 	}
-
-	public List<Vulnerability> getVulnerabilitiesList() {
-		return vulnerabilitiesList;
+	
+	public void addVulnerabilities(List<Vulnerability> vulnerabilities) {
+		this.vulnerabilitiesList.addAll(vulnerabilities);
 	}
 	
-	public void parseOutput() {
-		JsonUtils.parseJsonOutput("fileName", this.vulnerabilitiesList);
+	public void addVulnerability(Vulnerability vulnerability) {
+		this.vulnerabilitiesList.add(vulnerability);
+	}
+	
+	public void parseOutput(String fileName) {
+		JsonUtils.parseJsonOutput(fileName, this.vulnerabilitiesList);
 	}
  }
