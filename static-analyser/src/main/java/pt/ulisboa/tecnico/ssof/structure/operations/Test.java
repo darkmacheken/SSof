@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Test extends Instruction {
 	private String firstArgument;
@@ -20,4 +21,8 @@ public class Test extends Instruction {
 		return secondArgument;
 	}
 
+	@Override
+	public void accept(Visitor visitor){
+		visitor.visitTest(this);
+	}
 }

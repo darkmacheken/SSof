@@ -64,7 +64,7 @@ public class InstructionDeserializer extends StdDeserializer<Instruction> {
        	case "push":
         	return new Push(position, address, arguments.get("value"));
        	case "mov":
-       		return new Mov(position, address, arguments.get("dest"), arguments.get("value"));
+       		return new Mov(position, address, arguments.get("dest"), arguments.get("value"), arguments.get("obs"));
        	case "lea":
        		return new Lea(position, address, arguments.get("dest"), arguments.get("value"));
        	case "call":
