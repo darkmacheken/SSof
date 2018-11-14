@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Je extends Instruction {
 	private String jumpAddress;
@@ -12,5 +13,10 @@ public class Je extends Instruction {
 
 	public String getJumpAddress() {
 		return jumpAddress;
+	}
+
+	@Override
+	public void accept(Visitor visitor){
+		visitor.visitJe(this);
 	}
 }

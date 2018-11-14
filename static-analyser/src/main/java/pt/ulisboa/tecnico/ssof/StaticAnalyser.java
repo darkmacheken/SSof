@@ -4,15 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import pt.ulisboa.tecnico.ssof.structure.Function;
+import pt.ulisboa.tecnico.ssof.structure.graph.Graph;
+import pt.ulisboa.tecnico.ssof.structure.operations.Program;
+import pt.ulisboa.tecnico.ssof.utils.JsonUtils;
 
 
 public class StaticAnalyser {
@@ -34,25 +29,8 @@ public class StaticAnalyser {
 	        logger.fatal("The file: " + fileName + " doesn't exists.");
 	        System.exit(-1);
 	    }
-	    Map<String,Function> functions = StaticAnalyser.parseJsonInput(jsonObject.toString());
+	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
+	    new Graph().generateGraph(program);
     }
 
-	/**
-	 * This function receives a string containing the jsonObject and creates a map with the
-	 * existing functions, each one with the corresponding variables (List<Variable>) and 
-	 * instructions (List<Instruction>).
-	 * @param jsonObject
-	 * @return map of the existing functions
-	 */
-	private static Map<String,Function> parseJsonInput(String jsonObject) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String,Function> functions = new LinkedHashMap<>();
-		try {
-			functions = objectMapper.readValue(jsonObject, new TypeReference<Map<String,Function>>(){});
-		} catch (IOException e) {
-			logger.fatal("Error parsing the json.");
-	        System.exit(-1);
-		} 
-		return functions;
-	}
 }

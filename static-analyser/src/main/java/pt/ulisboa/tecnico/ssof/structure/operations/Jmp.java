@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Jmp extends Instruction {
 	private String jumpAddress;
@@ -14,4 +15,8 @@ public class Jmp extends Instruction {
 		return jumpAddress;
 	}
 
+	@Override
+	public void accept(Visitor visitor){
+		visitor.visitJmp(this);
+	}
 }

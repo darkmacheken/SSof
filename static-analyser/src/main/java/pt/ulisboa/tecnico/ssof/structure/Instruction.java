@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 @JsonDeserialize(using = InstructionDeserializer.class)
 public abstract class Instruction {
@@ -19,4 +20,6 @@ public abstract class Instruction {
 	public String getAddress() {
 		return address;
 	}
+
+	public abstract void accept(Visitor visitor);
 }
