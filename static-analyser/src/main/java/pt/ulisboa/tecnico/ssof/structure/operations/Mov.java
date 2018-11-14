@@ -1,26 +1,13 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
-import pt.ulisboa.tecnico.ssof.structure.Instruction;
 import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
-public class Mov extends Instruction {
-	private String destination;
-	private String value;
+public class Mov extends BinaryInstruction {
 	private String observations;
 
 	public Mov(int position, String address, String destination, String value, String observations) {
-		super(position, address);
-		this.destination = destination;
-		this.value = value;
+		super(position, address, destination, value);
 		this.observations = observations;
-	}
-
-	public String getDestination() {
-		return destination;
-	}
-
-	public String getValue() {
-		return value;
 	}
 	
 	public String getObservations() {
