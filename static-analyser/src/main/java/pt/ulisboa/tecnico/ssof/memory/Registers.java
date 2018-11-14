@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.ssof.structure;
+package pt.ulisboa.tecnico.ssof.memory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,10 +8,10 @@ import org.apache.log4j.Logger;
 
 public class Registers {
 	private static final Logger logger = Logger.getLogger(Registers.class);
-	private static final Long LSB_64 = 0xFFFFFFFFL;
-	private static final Long LSB_32 = 0x00FFFFFFL;
-	private static final Long LSB_16 = 0x0000FFFFL;
-	private static final Long LSB_8 = 0x000000FFL;
+	private static final Long LSB_8 =  0x00000000000000FFL;
+	private static final Long LSB_16 = 0x000000000000FFFFL;
+	private static final Long LSB_32 = 0x00000000FFFFFFFFL;
+	private static final Long LSB_64 = 0xFFFFFFFFFFFFFFFFL;
 
 	private final Map<String, Long> registersBank;
 	private static final Map<String, MutablePair<String, Long>> registersMap = createRegistersMap();
@@ -161,5 +161,4 @@ public class Registers {
 		
 		return registersMap;
 	}
-	
 }
