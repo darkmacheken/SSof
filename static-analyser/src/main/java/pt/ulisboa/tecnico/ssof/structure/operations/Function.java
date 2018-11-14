@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.ssof.structure.Variable;
 import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Function {
+	private String name;
 	private int numberInstructions;
 	private List<Variable> variables;
 	private List<Instruction> instructions;
@@ -37,4 +38,12 @@ public class Function {
     public void accept(Visitor visitor){
         visitor.visitFunction(this);
     }
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }
