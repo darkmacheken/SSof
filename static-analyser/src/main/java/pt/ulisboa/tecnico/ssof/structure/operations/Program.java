@@ -8,6 +8,7 @@ public class Program {
 
     public Program(Map<String, Function> functions) {
         this.functions = functions;
+        this.functions.forEach((functionName, function) -> function.setName(functionName));
     }
 
     public Map<String, Function> getFunctions() {
