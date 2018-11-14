@@ -23,6 +23,7 @@
 hs_err_pid*
 
 .project
+.classpath
 static-analyser/.settings
 static-analyser/target
 static-analyser/static-analyser.iml
