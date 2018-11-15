@@ -10,10 +10,4 @@ public class Register extends Operand {
 	public String getName() {
 		return this.name;
 	}
-
-	@Override
-	protected Long getOperandValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -3,14 +3,14 @@ package pt.ulisboa.tecnico.ssof.structure.operands;
 public class Pointer extends Operand {
 	private String registerName;
 	private int offset;
-	private String wordSize;
+	private int wordSize;
 	
 	public Pointer(String registerName, int offset) {
 		this.registerName = registerName;
 		this.offset = offset;
 	}
 	
-	public Pointer(String registerName, int offset, String wordSize) {
+	public Pointer(String registerName, int offset, int wordSize) {
 		this.registerName = registerName;
 		this.offset = offset;
 		this.wordSize = wordSize;
@@ -24,13 +24,7 @@ public class Pointer extends Operand {
 		return this.offset;
 	}
 
-	public String getWordSize() {
+	public int getWordSize() {
 		return this.wordSize;
-	}
-
-	@Override
-	protected Long getOperandValue() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

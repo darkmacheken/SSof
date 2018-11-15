@@ -10,10 +10,4 @@ public class Number extends Operand {
 	public long getValue() {
 		return this.value;
 	}
-
-	@Override
-	protected Long getOperandValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
