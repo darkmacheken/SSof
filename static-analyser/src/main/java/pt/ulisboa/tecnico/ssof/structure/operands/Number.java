@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.ssof.structure.operands;
 
-public class Number extends Operand {
+public class Number implements Operand {
 	private long value;
 	
 	public Number(long value) {

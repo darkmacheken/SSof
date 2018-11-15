@@ -9,9 +9,9 @@ import pt.ulisboa.tecnico.ssof.structure.operands.Operand;
 import pt.ulisboa.tecnico.ssof.structure.operands.Pointer;
 import pt.ulisboa.tecnico.ssof.structure.operands.Register;
 
-public final class OperandParser {
+public final class OperandsUtils {
 	
-	private OperandParser() {}
+	private OperandsUtils() {}
 	
 	public static Operand parseOperand(String operand) {
 		Pattern pointerPattern = Pattern.compile("\\[.+\\]");
@@ -25,8 +25,6 @@ public final class OperandParser {
 		//is it a value?
 		} else if (valueMatcher.find()) {
 			String valueStr = valueMatcher.group(0).substring(2);
-			
-			//long value = Long.parseLong(valueStr, 16);
 			long value = new BigInteger(valueStr, 16).longValue();
 			return new Number(value);
 		//if it's not a pointer nor a value, it must be a register
@@ -43,7 +41,7 @@ public final class OperandParser {
 		
 		String pointer = pointerMatcher.group(0);
 		
-		Pattern offsetSignPattern = Pattern.compile("\\+|-");
+		Pattern offsetSignPattern = Pattern.compile("[+-]");
 		Matcher offsetSignMatcher = offsetSignPattern.matcher(pointer);
 		
 		//if there is an offset
@@ -60,10 +58,10 @@ public final class OperandParser {
 			
 		//if there is no offset
 		} else {
-			register = pointer.substring(1, pointer.indexOf("]"));
+			register = pointer.substring(1, pointer.indexOf(']'));
 		}
 		
-		Pattern wordSizePattern = Pattern.compile("BYTE|DWORD|QWORD|WORD");
+		Pattern wordSizePattern = Pattern.compile("BYTE|WORD|DWORD|QWORD");
 		Matcher wordSizeMatcher = wordSizePattern.matcher(operand);
 		if (wordSizeMatcher.find()) {
 			String wordSizeStr = wordSizeMatcher.group(0);

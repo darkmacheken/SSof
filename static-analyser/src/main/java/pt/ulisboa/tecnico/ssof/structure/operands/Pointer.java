@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.ssof.structure.operands;
 
-public class Pointer extends Operand {
+public class Pointer implements Operand {
 	private String registerName;
 	private int offset;
 	private int wordSize;

@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.ssof.structure.operands;
 
-public class Register extends Operand {
+public class Register implements Operand {
 	private String name;
 	
 	public Register(String name) {
