@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.ssof.memory;
 
-import com.sun.istack.internal.NotNull;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +7,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -165,14 +165,13 @@ public class StackMemory {
         Variable currentUnmappedVariable = new Variable();
         for(int i = memory.size() - 1; i > currentBasePointer ; i--){
             MemoryPosition memoryPosition = memory.get(i);
-           if(memoryPosition.getVariable() == null){
+            if(memoryPosition.getVariable() == null){
                if(i + 1 != indexLastByteUnmapped){
                    currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-" + i);
-                   indexLastByteUnmapped = i;
                } else {
                    currentUnmappedVariable.incrementBytes();
-                   indexLastByteUnmapped = i;
                }
+               indexLastByteUnmapped = i;
                memoryPosition.setVariable(currentUnmappedVariable);
            }
         }
@@ -214,13 +213,13 @@ public class StackMemory {
      * Writes the value in the memory appointed by position relatively to RBP if no SCORRUPTION occurs.
      * @param position is relative to the current RBP
      * @param value is the value to write
-     * @return a vulnerability if there is an null otherwise
+     * @return a vulnerability if there is any and null otherwise
      */
     public Vulnerability writeByte(int position, Long value){
         int index = currentBasePointer + position;
         // out of the current stack frame
         if(index <= currentBasePointer - 16 || index >= memory.size()) {
-            String address = (-position) > 0 ? "rbp+" + (-position) : "rbp-" + (-position);
+            String address = position < 0 ? "rbp-" + (-position) : "rbp+" + position;
             return new Vulnerability("SCORRUPTION", currentFunction.getName(), address);
         }
 
@@ -247,12 +246,12 @@ public class StackMemory {
 
     /**
      * Writes the value in the memory appointed by position relatively to RBP if no SCORRUPTION occurs.
-     * @param variable the variable that is supposed to write
+     * @param variable the variable that is supposed to write. Can't be null
      * @param position is relative to the current RBP
      * @param value is the value to write
-     * @return a vulnerability if there is an null otherwise
+     * @return a vulnerability if there is any and null otherwise
      */
-    public Vulnerability writeByte(@NotNull Variable variable, int position, Long value){
+    public Vulnerability writeByte(Variable variable, int position, Long value){
         Vulnerability vulnerability = writeByte(position, value);
 
         if(vulnerability == null){ // can be a var overflow
@@ -296,5 +295,25 @@ public class StackMemory {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the variable mapped in the memory position appointed by index.
+     * @param index index of the memory position. Index is an absolute "address".
+     * @return an optional with the mapped variable. The optional will be empty if the memory appointed by index
+     * is unmapped.
+     */
+    public Optional<Variable> getMappedVariable(int index){
+        if(index < 0 || index >= memory.size()){
+            logger.error("Index out of memory.");
+            return Optional.empty();
+        }
+
+        Variable variable = memory.get(index).getVariable();
+        if(variable == null){
+            return Optional.empty();
+        } else {
+            return Optional.of(variable);
+        }
     }
 }
