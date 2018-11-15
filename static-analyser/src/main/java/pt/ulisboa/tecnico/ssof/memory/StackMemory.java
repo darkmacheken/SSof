@@ -184,7 +184,7 @@ public class StackMemory {
      * @throws IndexOutOfBoundsException if the position is not in memory.
      */
     public Long readByte(int position){
-        return (long) memory.get(currentBasePointer + position).getContent();
+        return (long) memory.get(currentBasePointer - position).getContent();
     }
 
     /**
@@ -198,7 +198,7 @@ public class StackMemory {
             logger.error("You can only read between 1 and 8 bytes.");
             return readByte(position);
         }
-        int endIndex = currentBasePointer + position;
+        int endIndex = currentBasePointer - position;
         int startIndex = endIndex - numBytes;
 
         byte[] bytes = ArrayUtils.toPrimitive(
@@ -216,7 +216,7 @@ public class StackMemory {
      * @return a vulnerability if there is any and null otherwise
      */
     public Vulnerability writeByte(int position, Long value){
-        int index = currentBasePointer + position;
+        int index = currentBasePointer - position;
         // out of the current stack frame
         if(index <= currentBasePointer - 16 || index >= memory.size()) {
             String address = position < 0 ? "rbp-" + (-position) : "rbp+" + position;
@@ -255,7 +255,7 @@ public class StackMemory {
         Vulnerability vulnerability = writeByte(position, value);
 
         if(vulnerability == null){ // can be a var overflow
-            int index = currentBasePointer + position;
+            int index = currentBasePointer - position;
             MemoryPosition memoryPosition = memory.get(index);
 
             if(!memoryPosition.getVariable().equals(variable)){
@@ -282,7 +282,7 @@ public class StackMemory {
             logger.error("You can only write between 1 and 8 bytes.");
             return Collections.singletonList(writeByte(position, value));
         }
-        int index = currentBasePointer + position;
+        int index = currentBasePointer - position;
         byte[] bytes = Arrays.copyOfRange(ByteBuffer.allocate(8).putLong(value).array(), 8 - numBytes, 8);
 
         List<Vulnerability> vulnerabilities = new ArrayList<>();
