@@ -28,3 +28,5 @@ static-analyser/.settings
 static-analyser/target
 static-analyser/static-analyser.iml
 static-analyser/.idea/
+
+static-analyser/bin/target/classes/META-INF/
