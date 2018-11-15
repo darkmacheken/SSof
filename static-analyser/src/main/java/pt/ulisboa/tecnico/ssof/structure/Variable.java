@@ -26,7 +26,7 @@ public class Variable {
 		this.type = type;
 		this.name = name;
 		this.address = address;
-		this.relativeAddress = - NumberUtils.toInt(StringUtils.remove(address, "rbp"), 0);
+		this.relativeAddress = NumberUtils.toInt(StringUtils.remove(address, "rbp"), 0);
 	}
 	
 	public int getBytes() {

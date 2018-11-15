@@ -153,7 +153,7 @@ public class StackMemory {
     public void mapMemory(){
         // Map variables
         for(Variable variable : currentFunction.getVariables()){
-            int endIndex = currentBasePointer + variable.getRelativeAddress();
+            int endIndex = currentBasePointer - variable.getRelativeAddress();
             int startIndex = endIndex - variable.getBytes();
 
             memory.subList(startIndex, endIndex + 1)
@@ -303,13 +303,13 @@ public class StackMemory {
      * @return an optional with the mapped variable. The optional will be empty if the memory appointed by index
      * is unmapped.
      */
-    public Optional<Variable> getMappedVariable(int index){
+    public Optional<Variable> getMappedVariable(Long index){
         if(index < 0 || index >= memory.size()){
             logger.error("Index out of memory.");
             return Optional.empty();
         }
 
-        Variable variable = memory.get(index).getVariable();
+        Variable variable = memory.get(Math.toIntExact(index)).getVariable();
         if(variable == null){
             return Optional.empty();
         } else {
