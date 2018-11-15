@@ -1,17 +1,19 @@
 package pt.ulisboa.tecnico.ssof.structure.operations;
 
 import pt.ulisboa.tecnico.ssof.structure.Instruction;
+import pt.ulisboa.tecnico.ssof.structure.operands.Operand;
+import pt.ulisboa.tecnico.ssof.utils.OperandsUtils;
 import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 public class Push extends Instruction {
-	private String value;
+	private Operand value;
 	
 	public Push(int position, String address, String value) {
 		super(position, address);
-		this.value = value;
+		this.value = OperandsUtils.parseOperand(value);
 	}
 
-	public String getValue() {
+	public Operand getValue() {
 		return value;
 	}
 

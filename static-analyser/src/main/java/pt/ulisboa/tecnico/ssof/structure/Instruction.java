@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import pt.ulisboa.tecnico.ssof.visitor.Visitor;
 
 @JsonDeserialize(using = InstructionDeserializer.class)
@@ -14,11 +15,11 @@ public abstract class Instruction {
 	}
 	
 	public int getPosition() {
-		return position;
+		return this.position;
 	}
 
 	public String getAddress() {
-		return address;
+		return this.address;
 	}
 
 	public abstract void accept(Visitor visitor);
