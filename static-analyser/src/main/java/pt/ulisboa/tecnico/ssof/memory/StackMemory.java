@@ -215,7 +215,12 @@ public class StackMemory {
      * @throws IndexOutOfBoundsException if the position is not in memory.
      */
     public Long readByte(int position){
-        return (long) memory.get(currentBasePointer - position).getContent();
+        try{
+            return (long) memory.get(currentBasePointer - position).getContent();
+        } catch (IndexOutOfBoundsException e){
+            return 0L;
+        }
+
     }
 
     /**
