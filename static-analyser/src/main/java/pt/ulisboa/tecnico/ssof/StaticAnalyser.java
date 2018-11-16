@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import org.apache.log4j.Logger;
+import pt.ulisboa.tecnico.ssof.structure.Vulnerabilities;
 import pt.ulisboa.tecnico.ssof.structure.graph.Graph;
+import pt.ulisboa.tecnico.ssof.structure.operations.Function;
 import pt.ulisboa.tecnico.ssof.structure.operations.Program;
 import pt.ulisboa.tecnico.ssof.utils.JsonUtils;
+import pt.ulisboa.tecnico.ssof.visitor.Executor;
 
 
 public class StaticAnalyser {
@@ -29,8 +33,17 @@ public class StaticAnalyser {
 	        logger.fatal("The file: " + fileName + " doesn't exists.");
 	        System.exit(-1);
 	    }
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+        Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput(fileName);
     }
 
 }

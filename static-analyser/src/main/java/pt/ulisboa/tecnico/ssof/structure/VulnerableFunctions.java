@@ -40,7 +40,7 @@ public final class VulnerableFunctions {
 	public static List<Vulnerability> gets(Registers registers, StackMemory stackMemory, String InstructionPointer) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
-		Long size = Long.MAX_VALUE;
+		Long size = Long.valueOf(Integer.MAX_VALUE);
 		
 		if(!variable.isPresent()) {
 			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
@@ -60,16 +60,24 @@ public final class VulnerableFunctions {
 	
 	private static List<Vulnerability> searchGetsVulnerabilities(StackMemory stackMemory, Optional<Variable> variable, Long size) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
+		boolean scorruption = false;
 		
 		Vulnerability vulnerability;
 		for(int i = 0; i < Math.toIntExact(size) - 1; i++) {
-			vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - i, 0xFFL);
-			vulnerabilities.add(vulnerability);
+			vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() + i, 0xFFL);
 			if(vulnerability != null &&
 				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
+				scorruption = true;
+				vulnerabilities.add(vulnerability);
 				break;
 			}
+			vulnerabilities.add(vulnerability);
 		}
+
+		if(scorruption){
+			return vulnerabilities;
+		}
+
 		vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - Math.toIntExact(size), 0x00L);
 		vulnerabilities.add(vulnerability);
 		
