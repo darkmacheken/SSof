@@ -176,7 +176,7 @@ public class StackMemory {
         // Map variables
         for(Variable variable : currentFunction.getVariables()){
             int endIndex = currentBasePointer - variable.getRelativeAddress();
-            int startIndex = endIndex - variable.getBytes();
+            int startIndex = endIndex - variable.getBytes() + 1;
 
             memory.subList(startIndex, endIndex + 1)
                   .forEach(memoryPosition -> memoryPosition.setVariable(variable));
@@ -192,7 +192,7 @@ public class StackMemory {
                 if (i + 1 == indexLastByteUnmapped) {
                     currentUnmappedVariable.incrementBytes();
                 } else {
-                    currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-0x" + Integer.toHexString(i-currentBasePointer+1));
+                    currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-0x" + Integer.toHexString(i-currentBasePointer - 1));
                 }
                 indexLastByteUnmapped = i;
                memoryPosition.setVariable(currentUnmappedVariable);
