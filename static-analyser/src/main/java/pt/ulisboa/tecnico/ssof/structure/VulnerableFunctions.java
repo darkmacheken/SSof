@@ -442,6 +442,7 @@ public final class VulnerableFunctions {
 
             if (byteCounter == size - 1){
                 vulnerabilities.add(stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + i + 1, 0x00L));
+                byteCounter++;
                 break;
             }
 
@@ -450,7 +451,9 @@ public final class VulnerableFunctions {
 		}
 		if(scorruption) {
  			return vulnerabilities;
- 		} else if(!(variable2.isPresent() && variable2.get().getName() != null)){
+ 		} else if (byteCounter == size){
+            return vulnerabilities;
+        } else if(!(variable2.isPresent() && variable2.get().getName() != null)){
             vulnerabilities.add(stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + j, 0x00L));
             return vulnerabilities;
         }
