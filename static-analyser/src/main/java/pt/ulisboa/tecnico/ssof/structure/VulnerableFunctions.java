@@ -187,6 +187,7 @@ public final class VulnerableFunctions {
 	private static List<Vulnerability> searchStrcpyVulnerabilities(StackMemory stackMemory, 
 			Variable variableSource, Variable variableDestination, Long limit) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
+		boolean scorruption = false;
 		/* contentSize stores the size of the content of the sourceVariable to copy */
 		int contentSize = Integer.min(getVariableStringSize(stackMemory, variableSource), Math.toIntExact(limit));
 		
@@ -196,12 +197,17 @@ public final class VulnerableFunctions {
 			Long content = stackMemory.readByte(variableSource.getRelativeAddress() + i);
 			vulnerability = stackMemory.writeByte(variableDestination, 
 				variableDestination.getRelativeAddress() + i, content);
-			vulnerabilities.add(vulnerability);
 			if(vulnerability != null &&
 				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
+				scorruption = true;
+	 			vulnerabilities.add(vulnerability);
 				break;
 			}
+			vulnerabilities.add(vulnerability);
 		}
+		if(scorruption) {
+ 			return vulnerabilities;
+ 		}
 		/*If the length of sourceVariable is less than n, strncpy() writes additional null bytes to dest 
 		 * to ensure that a total of n bytes are written. In strcpy, the n is equal to the sourceVariable size
 		 * so this loop is not performed. */
@@ -223,6 +229,7 @@ public final class VulnerableFunctions {
 		/* sourceSize stores the size of the content of the sourceVariable to copy */
 		int sourceSize = Integer.min(getVariableStringSize(stackMemory, variableSource), Math.toIntExact(limit));
 		int destinationSize = getVariableStringSize(stackMemory, variableDestination);
+		boolean scorruption = false;
 		
 		Vulnerability vulnerability;
 		int i;
@@ -230,12 +237,17 @@ public final class VulnerableFunctions {
 			Long content = stackMemory.readByte(variableSource.getRelativeAddress() + i);
 			vulnerability = stackMemory.writeByte(variableDestination, 
 				variableDestination.getRelativeAddress() + destinationSize + i, content);
-			vulnerabilities.add(vulnerability);
 			if(vulnerability != null &&
 				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
+				scorruption = true;
+	 			vulnerabilities.add(vulnerability);
 				break;
 			}
+			vulnerabilities.add(vulnerability);
 		}
+		if(scorruption) {
+ 			return vulnerabilities;
+ 		}
 		/*If the length of sourceVariable is less than n, strncat() writes additional null bytes to dest 
 		 * to ensure that a total of n bytes are written. In strcat, the n is equal to the sourceVariable size
 		 * so this loop is not performed. */
