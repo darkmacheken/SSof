@@ -1,25 +1,21 @@
 package pt.ulisboa.tecnico.ssof;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.json.JSONException;
-import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import pt.ulisboa.tecnico.ssof.structure.Vulnerabilities;
-import pt.ulisboa.tecnico.ssof.structure.Vulnerability;
 import pt.ulisboa.tecnico.ssof.structure.graph.Graph;
+import pt.ulisboa.tecnico.ssof.structure.operations.Function;
 import pt.ulisboa.tecnico.ssof.structure.operations.Program;
 import pt.ulisboa.tecnico.ssof.utils.JsonUtils;
+import pt.ulisboa.tecnico.ssof.visitor.Executor;
 
 public class BasicTest {
 	//vulns.parseOutput("src/test/resources/01_gets_all")
@@ -38,12 +34,6 @@ public class BasicTest {
 	private final String test12Name = "12_3_vars_nok_all";
 	private final String test13Name = "13_multiple_overflows";
 	
-	
-	@Before
-	public void setUp() {
-		
-	}
-	
 	@SuppressWarnings("resource")
 	@Test
 	public void test01() throws IOException, JSONException, InterruptedException {
@@ -58,8 +48,17 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test01Name);
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test01Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -82,8 +81,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test02Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test02Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -106,8 +115,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test03Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test03Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -130,8 +149,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test04Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test04Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -154,8 +183,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test05Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test05Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -178,8 +217,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test06Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test06Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -202,8 +251,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test07Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test07Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -226,8 +285,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test08Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test08Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -250,8 +319,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test09Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test09Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -274,8 +353,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test10Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test10Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -298,8 +387,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test11Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test11Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -322,8 +421,18 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test12Name);
+	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test12Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -346,8 +455,17 @@ public class BasicTest {
 	    
 	    StringBuilder jsonObject = new StringBuilder();
 	    jsonObject.append(testInput);
-	    Program program = new Program(JsonUtils.parseJsonInput(jsonObject.toString()));
-	    new Graph().generateGraph(program);
+	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
+        Program program = new Program(functions);
+
+	    Graph graph = new Graph();
+	    graph.generateGraph(program);
+
+        Executor executor = new Executor(functions);
+        graph.getMainBlockEntry().accept(executor);
+
+        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
+        vulnerabilities.parseOutput("src/test/resources/" + test13Name);
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test13Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -355,5 +473,4 @@ public class BasicTest {
 
 	    JSONAssert.assertEquals(expectedJsonData, resultJsonData, JSONCompareMode.NON_EXTENSIBLE);
 	}
-	
 }
