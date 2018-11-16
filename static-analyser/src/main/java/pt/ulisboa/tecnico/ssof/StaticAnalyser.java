@@ -43,7 +43,11 @@ public class StaticAnalyser {
         graph.getMainBlockEntry().accept(executor);
 
         Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput(fileName);
+        
+        int startIndex = fileName.indexOf('/', 19) + 1;
+        int endIndex = fileName.indexOf('.', 19);
+        String jsonFile = fileName.substring(startIndex, endIndex);
+        vulnerabilities.parseOutput("src/test/resources/" + jsonFile);
     }
 
 }

@@ -2,20 +2,12 @@ package pt.ulisboa.tecnico.ssof;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-
-import pt.ulisboa.tecnico.ssof.structure.Vulnerabilities;
-import pt.ulisboa.tecnico.ssof.structure.graph.Graph;
-import pt.ulisboa.tecnico.ssof.structure.operations.Function;
-import pt.ulisboa.tecnico.ssof.structure.operations.Program;
-import pt.ulisboa.tecnico.ssof.utils.JsonUtils;
-import pt.ulisboa.tecnico.ssof.visitor.Executor;
 
 public class BasicTest {
 	
@@ -41,23 +33,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test01Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test01Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test01Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test01Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
@@ -74,23 +52,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test02Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test02Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test02Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test02Name + ".output.json");
@@ -108,23 +72,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test03Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test03Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test03Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test03Name + ".output.json");
@@ -142,23 +92,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test04Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test04Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test04Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test04Name + ".output.json");
@@ -176,23 +112,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test05Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test05Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test05Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test05Name + ".output.json");
@@ -210,23 +132,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test06Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test06Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test06Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test06Name + ".output.json");
@@ -244,23 +152,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test07Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test07Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test07Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test07Name + ".output.json");
@@ -278,23 +172,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test08Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test08Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test08Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test08Name + ".output.json");
@@ -312,23 +192,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test09Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test09Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test09Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test09Name + ".output.json");
@@ -346,23 +212,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test10Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test10Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test10Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test10Name + ".output.json");
@@ -380,23 +232,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test11Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test11Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test11Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test11Name + ".output.json");
@@ -414,23 +252,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test12Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test12Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test12Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test12Name + ".output.json");
@@ -448,23 +272,9 @@ public class BasicTest {
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
-	    InputStream testIS = this.getClass().getResourceAsStream("/public_basic_tests/" + test13Name + ".json");
-		Scanner testScanner = new Scanner(testIS).useDelimiter("\\A");
-	    String testInput = testScanner.hasNext() ? testScanner.next() : "";
-	    
-	    StringBuilder jsonObject = new StringBuilder();
-	    jsonObject.append(testInput);
-	    Map<String, Function> functions = JsonUtils.parseJsonInput(jsonObject.toString());
-        Program program = new Program(functions);
-
-	    Graph graph = new Graph();
-	    graph.generateGraph(program);
-
-        Executor executor = new Executor(functions);
-        graph.getMainBlockEntry().accept(executor);
-
-        Vulnerabilities vulnerabilities = executor.getVulnerabilities();
-        vulnerabilities.parseOutput("src/test/resources/" + test13Name);
+	    String[] args = new String[1];
+	    args[0] = "src/test/resources/public_basic_tests/" + test13Name + ".json";
+	    StaticAnalyser.main(args);
 	    
 		InputStream resultIS = this.getClass().getResourceAsStream("/" + test13Name + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
