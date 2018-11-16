@@ -121,7 +121,7 @@ public final class VulnerableFunctions {
 			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
 			System.exit(-1);
 		}
-		Long limit = Long.valueOf(Integer.MAX_VALUE);
+		Long limit = Long.valueOf(Integer.MAX_VALUE) - 1;
 		vulnerabilities = searchStrcatVulnerabilities(stackMemory, variableSource.get(), 
 			variableDestination.get(), limit);
 		
@@ -239,7 +239,7 @@ public final class VulnerableFunctions {
 		/*If the length of sourceVariable is less than n, strncat() writes additional null bytes to dest 
 		 * to ensure that a total of n bytes are written. In strcat, the n is equal to the sourceVariable size
 		 * so this loop is not performed. */
-		for( ; i < Math.toIntExact(limit); i++) {
+		for( ; i < Math.toIntExact(limit) + 1; i++) {
 			vulnerability = stackMemory.writeByte(variableDestination, 
 					variableDestination.getRelativeAddress() + destinationSize + i, 0x00L);
 				vulnerabilities.add(vulnerability);
