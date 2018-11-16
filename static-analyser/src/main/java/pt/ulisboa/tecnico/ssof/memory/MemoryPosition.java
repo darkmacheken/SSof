@@ -11,6 +11,11 @@ class MemoryPosition {
         this.content = content;
     }
 
+    MemoryPosition(MemoryPosition memoryPosition){
+        this.variable = memoryPosition.getVariable();
+        this.content = memoryPosition.getContent();
+    }
+
     Variable getVariable() {
         return variable;
     }
