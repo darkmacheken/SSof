@@ -34,7 +34,7 @@ public class StackMemory {
     public StackMemory() {
         // memory is initialized with 8 bytes(initialized with 0xFF) of unmapped memory just to avoid IndexOutOfBound
         this.memory = new LinkedList<>();
-        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(null, (byte) 0xFF)));
+        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(new Variable(), (byte) 0xFF)));
 
         this.calledFunctions = new Stack<>();
         this.stackBasePointer = new Stack<>();
@@ -128,7 +128,7 @@ public class StackMemory {
      */
     public Long push(Long value){
         byte[] bytes = ByteBuffer.allocate(8).putLong(value).array();
-        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(null, bytes[i])));
+        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(new Variable(), bytes[i])));
         return getStackPointer();
     }
 
@@ -138,7 +138,7 @@ public class StackMemory {
      * @return the new stack pointer index
      */
     public Long allocate(int numBytes){
-        IntStream.range(0, numBytes).forEach(i -> memory.addLast(new MemoryPosition(null, (byte) 0x00)));
+        IntStream.range(0, numBytes).forEach(i -> memory.addLast(new MemoryPosition(new Variable(), (byte) 0x00)));
         return getStackPointer();
     }
 
@@ -188,7 +188,7 @@ public class StackMemory {
         for(int i = memory.size() - 1; i > currentBasePointer ; i--){
             MemoryPosition memoryPosition = memory.get(i);
 
-            if(memoryPosition.getVariable() == null){
+            if(memoryPosition.getVariable().getType() == null){
                 if (i + 1 == indexLastByteUnmapped) {
                     currentUnmappedVariable.incrementBytes();
                 } else {
@@ -230,7 +230,7 @@ public class StackMemory {
             return readByte(position);
         }
         int endIndex = currentBasePointer - position;
-        int startIndex = endIndex - numBytes;
+        int startIndex = endIndex - numBytes + 1;
 
         byte[] bytes = ArrayUtils.toPrimitive(
                 memory.subList(startIndex, endIndex + 1).stream()
@@ -316,7 +316,7 @@ public class StackMemory {
         byte[] bytes = Arrays.copyOfRange(ByteBuffer.allocate(8).putLong(value).array(), 8 - numBytes, 8);
 
         List<Vulnerability> vulnerabilities = new ArrayList<>();
-        for (int i = position, j = 0; j < numBytes; i++, j++){
+        for (int i = position, j = bytes.length - 1; j >= 0; i++, j--){
             vulnerabilities.add(writeByte(i, (long) bytes[j]));
         }
 
@@ -343,6 +343,7 @@ public class StackMemory {
         if(variable == null){
             return Optional.empty();
         } else {
+            variable.setRelativeAddress((int) (currentBasePointer - index));
             return Optional.of(variable);
         }
     }

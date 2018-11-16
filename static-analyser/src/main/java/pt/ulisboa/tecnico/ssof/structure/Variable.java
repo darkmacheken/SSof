@@ -15,6 +15,8 @@ public class Variable {
 	private String name;
 	private String address;
 
+	private int relativeAddress;
+
 	public Variable() {}
 
 	@JsonCreator
@@ -26,6 +28,8 @@ public class Variable {
 		this.type = type;
 		this.name = name;
 		this.address = address;
+
+		this.relativeAddress = getOffset();
 	}
 	
 	public int getBytes() {
@@ -45,9 +49,17 @@ public class Variable {
 	}
 
 	public int getRelativeAddress() {
-        Pointer pointer = (Pointer) OperandsUtils.parseOperand("[" + address + "]");
-		return pointer.getOffset();
+        return relativeAddress;
 	}
+
+    public void setRelativeAddress(int relativeAddress) {
+        this.relativeAddress = relativeAddress;
+    }
+
+    private int getOffset(){
+        Pointer pointer = (Pointer) OperandsUtils.parseOperand("[" + address + "]");
+        return pointer.getOffset();
+    }
 
 	public void incrementBytes(){
 		this.bytes += 1;
