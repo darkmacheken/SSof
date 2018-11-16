@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import pt.ulisboa.tecnico.ssof.memory.Registers;
@@ -20,25 +21,12 @@ public final class VulnerableFunctions {
 		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
 		Long size = registers.read("rsi");
 		
-		if(variable.isPresent()) {
-			Vulnerability vulnerability;
-			for(int i = 0; i < Math.toIntExact(size) - 1; i++) {
-				vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - i, 0xFFL);
-				if (vulnerability != null) {
-					vulnerabilities.add(vulnerability);
-					if(vulnerability.getVulnerabilityType().equals("SCORRUPTION")) {
-						break;
-					}
-				}
-			}
-			vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - Math.toIntExact(size), 0x00L);
-			if (vulnerability != null) {
-				vulnerabilities.add(vulnerability);
-			}
-		} else {
+		if(!variable.isPresent()) {
 			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
 			System.exit(-1);
-		}	
+		}
+		
+		searchGetsVulnerabilities(stackMemory, variable, size);
 		
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
@@ -55,29 +43,38 @@ public final class VulnerableFunctions {
 		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
 		Long size = Long.MAX_VALUE;
 		
-		if(variable.isPresent()) {
-			Vulnerability vulnerability;
-			for(int i = 0; i < Math.toIntExact(size) - 1; i++) {
-				vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - i, 0xFFL);
-				if (vulnerability != null) {
-					vulnerabilities.add(vulnerability);
-					if(vulnerability.getVulnerabilityType().equals("SCORRUPTION")) {
-						break;
-					}
-				}
-			}
-		} else {
+		if(!variable.isPresent()) {
 			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
 			System.exit(-1);
-		}	
+		}
+		
+		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size);
 		
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
 		        .distinct()
-		        .map(vuln -> {
+		        .peek(vuln -> {
 		        	vuln.setFunctionName("gets"); 
 					vuln.setAddress(InstructionPointer); 
-					return vuln;
 				}).collect(Collectors.toList());
 	}
+	
+	private static List<Vulnerability> searchGetsVulnerabilities(StackMemory stackMemory, Optional<Variable> variable, Long size) {
+		List<Vulnerability> vulnerabilities = new ArrayList<>();
+		
+		Vulnerability vulnerability;
+		for(int i = 0; i < Math.toIntExact(size) - 1; i++) {
+			vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - i, 0xFFL);
+			vulnerabilities.add(vulnerability);
+			if(vulnerability != null &&
+				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
+				break;
+			}
+		}
+		vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() - Math.toIntExact(size), 0x00L);
+		vulnerabilities.add(vulnerability);
+		
+		return vulnerabilities;
+	}
+	
 }
