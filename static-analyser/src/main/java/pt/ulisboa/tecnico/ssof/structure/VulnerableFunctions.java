@@ -25,7 +25,7 @@ public final class VulnerableFunctions {
 			System.exit(-1);
 		}
 
-		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size);
+		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, false);
 
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
@@ -45,7 +45,7 @@ public final class VulnerableFunctions {
 			System.exit(-1);
 		}
 
-		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size);
+		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, false);
 
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
@@ -161,7 +161,29 @@ public final class VulnerableFunctions {
 				}).collect(Collectors.toList());
 	}
 
-	private static List<Vulnerability> searchGetsVulnerabilities(StackMemory stackMemory, Optional<Variable> variable, Long size) {
+    public static List<Vulnerability> read(Registers registers, StackMemory stackMemory, String InstructionPointer) {
+        List<Vulnerability> vulnerabilities = new ArrayList<>();
+        Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rsi"));
+        Long size = registers.read("rdx");
+
+        if(!variable.isPresent()) {
+            logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
+            System.exit(-1);
+        }
+
+        vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, true);
+
+        return vulnerabilities.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .peek(vuln -> {vuln.setFunctionName("read");
+                    vuln.setAddress(InstructionPointer);
+                }).collect(Collectors.toList());
+
+    }
+
+	private static List<Vulnerability> searchGetsVulnerabilities(StackMemory stackMemory, Optional<Variable> variable, Long size,
+                                                                 boolean read) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		boolean scorruption = false;
 
@@ -180,8 +202,12 @@ public final class VulnerableFunctions {
 			return vulnerabilities;
 		}
 
-		vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() + Math.toIntExact(size) - 1, 0x00L);
-		vulnerabilities.add(vulnerability);
+		if(read){
+            vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() + Math.toIntExact(size) - 1, 0xFFL);
+        } else {
+            vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() + Math.toIntExact(size) - 1, 0x00L);
+        }
+        vulnerabilities.add(vulnerability);
 
 		return vulnerabilities;
 	}
@@ -275,4 +301,5 @@ public final class VulnerableFunctions {
 		}
 		return size;
 	}
+
 }

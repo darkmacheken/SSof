@@ -136,6 +136,8 @@ public class Executor implements Visitor {
             case "<fscanf@plt>":
                 break;
             case "<read@plt>":
+                vulnerabilities.addAll(
+                        VulnerableFunctions.read(registers, memory, call.getAddress()));
                 break;
             default:
                 memory.startStackFrame(functions.get(name.substring(1, name.length() - 1)));
