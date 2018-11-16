@@ -128,6 +128,8 @@ public class Executor implements Visitor {
                         VulnerableFunctions.strncat(registers, memory, call.getAddress()));
                 break;
             case "<sprintf@plt>":
+            	vulnerabilities.addAll(
+                        VulnerableFunctions.sprintf(registers, memory, call.getAddress()));
                 break;
             case "<snprintf@plt>":
                 break;
