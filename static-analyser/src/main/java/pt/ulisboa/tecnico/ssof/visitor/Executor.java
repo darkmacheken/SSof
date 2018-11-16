@@ -100,17 +100,25 @@ public class Executor implements Visitor {
                 vulnerabilities.addAll(
                         VulnerableFunctions.gets(registers, memory, call.getAddress()));
                 break;
-            case "<fgets@plt>>":
+            case "<fgets@plt>":
                 vulnerabilities.addAll(
                         VulnerableFunctions.fgets(registers, memory, call.getAddress()));
                 break;
             case "<strcpy@plt>":
+                vulnerabilities.addAll(
+                        VulnerableFunctions.strcpy(registers, memory, call.getAddress()));
                 break;
             case "<strncpy@plt>":
+                vulnerabilities.addAll(
+                        VulnerableFunctions.strncpy(registers, memory, call.getAddress()));
                 break;
             case "<strcat@plt>":
+                vulnerabilities.addAll(
+                        VulnerableFunctions.strcat(registers, memory, call.getAddress()));
                 break;
             case "<strncat@plt>":
+                vulnerabilities.addAll(
+                        VulnerableFunctions.strncat(registers, memory, call.getAddress()));
                 break;
             case "<sprintf@plt>":
                 break;
