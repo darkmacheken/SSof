@@ -164,16 +164,15 @@ public final class VulnerableFunctions {
 
 	public static List<Vulnerability> scanf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
-		System.out.println(Long.toHexString(registers.read("rdi")));
-		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rdi"));
-		Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("rsi"));
+		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rsi"));
+		Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("rdx"));
 				
 		if(!variable1.isPresent()) {
-			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
+			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
 			System.exit(-1);
 		}
 		Variable firstArgument = variable1.get();
-		if(variable2.isPresent()) {
+		if(variable2.isPresent() && variable2.get().getName() != null) {
 			firstArgument = variable2.get();
 		}
 
@@ -192,8 +191,8 @@ public final class VulnerableFunctions {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 
 		Optional<Variable> file = stackMemory.getMappedVariable(registers.read("rdi"));
-		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rsi"));
-		Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("rdx"));
+		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rdx"));
+		Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("rcx"));
 		
 		if(!file.isPresent()) {
 			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
@@ -201,11 +200,11 @@ public final class VulnerableFunctions {
 		}
 		
 		if(!variable1.isPresent()) {
-			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
+			logger.fatal("Variable in address " + registers.read("rdx") + " not found.");
 			System.exit(-1);
 		}
 		Variable firstArgument = variable1.get();
-		if(variable2.isPresent()) {
+		if(variable2.isPresent() && variable2.get().getName() != null) {
 			firstArgument = variable2.get();
 		}
 
@@ -215,7 +214,7 @@ public final class VulnerableFunctions {
 				.filter(Objects::nonNull)
 		        .distinct()
 		        .peek(vuln -> {
-		        	vuln.setFunctionName("fscanf");
+		        	vuln.setFunctionName("__isoc99_fscanf@plt");
 					vuln.setAddress(InstructionPointer);
 				}).collect(Collectors.toList());
 	}
@@ -225,6 +224,7 @@ public final class VulnerableFunctions {
 		int size = Integer.MAX_VALUE;
 		
 		Vulnerability vulnerability;
+		System.out.println(variable.getRelativeAddress());
 		for(int i = 0; i < size; i++) {
 			vulnerability = stackMemory.writeByte(variable, variable.getRelativeAddress() + i, 0xFFL);
 			if(vulnerability != null &&
