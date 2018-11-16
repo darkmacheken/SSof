@@ -87,9 +87,16 @@ public class Executor implements Visitor {
 
     @Override
     public void visitAdd(Add add) {
-        Long valueFirst = add.getFirstArgument().getValue(registers, memory);
-        Long valueSecond = add.getSecondArgument().getValue(registers, memory);
-        add.getFirstArgument().setValue(registers, memory, valueFirst + valueSecond);
+        if(add.getFirstArgument() instanceof Register &&
+                StringUtils.equals(((Register) add.getFirstArgument()).getName(),"rsp")){
+            Long value = add.getSecondArgument().getValue(registers, memory);
+            memory.allocateAndMap(Math.toIntExact(Math.abs(value)));
+            registers.write("rsp", memory.getStackPointer());
+        } else {
+          Long valueFirst = add.getFirstArgument().getValue(registers, memory);
+          Long valueSecond = add.getSecondArgument().getValue(registers, memory);
+          add.getFirstArgument().setValue(registers, memory, valueFirst + valueSecond);
+        }
     }
 
     @Override

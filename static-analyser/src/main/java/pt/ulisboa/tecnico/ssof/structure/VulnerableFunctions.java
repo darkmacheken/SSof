@@ -121,7 +121,8 @@ public final class VulnerableFunctions {
 			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
 			System.exit(-1);
 		}
-		Long limit = Long.valueOf(Integer.MAX_VALUE) - 1;
+
+		Long limit = (long) getVariableStringSize(stackMemory, variableSource.get()) + 1;
 		vulnerabilities = searchStrcatVulnerabilities(stackMemory, variableSource.get(),
 			variableDestination.get(), limit);
 
@@ -179,7 +180,7 @@ public final class VulnerableFunctions {
 			return vulnerabilities;
 		}
 
-		vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() + Math.toIntExact(size), 0x00L);
+		vulnerability = stackMemory.writeByte(variable.get(), variable.get().getRelativeAddress() + Math.toIntExact(size) - 1, 0x00L);
 		vulnerabilities.add(vulnerability);
 
 		return vulnerabilities;

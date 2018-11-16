@@ -192,7 +192,7 @@ public class StackMemory {
                 if (i + 1 == indexLastByteUnmapped) {
                     currentUnmappedVariable.incrementBytes();
                 } else {
-                    currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-0x" + Integer.toHexString(i-currentBasePointer - 1));
+                    currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-0x" + Integer.toHexString(i-currentBasePointer));
                 }
                 indexLastByteUnmapped = i;
                memoryPosition.setVariable(currentUnmappedVariable);
