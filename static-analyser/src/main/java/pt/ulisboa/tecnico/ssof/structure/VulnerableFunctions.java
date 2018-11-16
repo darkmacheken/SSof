@@ -26,14 +26,13 @@ public final class VulnerableFunctions {
 			System.exit(-1);
 		}
 		
-		searchGetsVulnerabilities(stackMemory, variable, size);
+		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size);
 		
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
 		        .distinct()
-		        .map(vuln -> {vuln.setFunctionName("fgets"); 
+		        .peek(vuln -> {vuln.setFunctionName("fgets"); 
 					vuln.setAddress(InstructionPointer); 
-					return vuln;
 				}).collect(Collectors.toList());
 	}
 		
