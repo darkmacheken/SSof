@@ -121,9 +121,9 @@ public final class VulnerableFunctions {
 			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
 			System.exit(-1);
 		}
-		int limit = variableSource.get().getBytes();
+		Long limit = Long.valueOf(Integer.MAX_VALUE);
 		vulnerabilities = searchStrcatVulnerabilities(stackMemory, variableSource.get(), 
-			variableDestination.get(), (long) limit);
+			variableDestination.get(), limit);
 		
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
@@ -241,7 +241,7 @@ public final class VulnerableFunctions {
 		 * so this loop is not performed. */
 		for( ; i < Math.toIntExact(limit); i++) {
 			vulnerability = stackMemory.writeByte(variableDestination, 
-					variableDestination.getRelativeAddress() + i, 0x00L);
+					variableDestination.getRelativeAddress() + destinationSize + i, 0x00L);
 				vulnerabilities.add(vulnerability);
 				if(vulnerability != null &&
 					StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
@@ -250,7 +250,6 @@ public final class VulnerableFunctions {
 		}
 		return vulnerabilities;
 	}
-	
 	
 	/**
 	 * This method returns the size of the string saved in the variable (until /0)
