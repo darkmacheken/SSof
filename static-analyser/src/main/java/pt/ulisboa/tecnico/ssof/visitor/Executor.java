@@ -131,7 +131,9 @@ public class Executor implements Visitor {
                 break;
             case "<snprintf@plt>":
                 break;
-            case "<scanf@plt>":
+            case "<__isoc99_scanf@plt>":
+            	vulnerabilities.addAll(
+                        VulnerableFunctions.scanf(registers, memory, call.getAddress()));
                 break;
             case "<fscanf@plt>":
                 break;
