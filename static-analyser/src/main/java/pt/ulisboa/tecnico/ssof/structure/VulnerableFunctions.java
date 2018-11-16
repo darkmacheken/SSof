@@ -69,9 +69,9 @@ public final class VulnerableFunctions {
 			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
 			System.exit(-1);
 		}
-		int limit = variableSource.get().getBytes();
+		Long limit = Long.valueOf(Integer.MAX_VALUE);
 		vulnerabilities = searchStrcpyVulnerabilities(stackMemory, variableSource.get(), 
-			variableDestination.get(), (long) limit);
+			variableDestination.get(), limit);
 		
 		return vulnerabilities.stream()
 				.filter(Objects::nonNull)
@@ -253,13 +253,11 @@ public final class VulnerableFunctions {
 	
 	
 	/**
-	 * This method returns the size of the string saved in the variable (until /0) and in case of not having
-	 * the null character, returns the variable byte size.
+	 * This method returns the size of the string saved in the variable (until /0)
 	 */
 	private static int getVariableStringSize(StackMemory stackMemory, Variable variable) {
 		int size = 0;
-		while(size < variable.getBytes() ||
-				stackMemory.readByte(variable.getRelativeAddress() + size) != 0x00L) {
+		while( stackMemory.readByte(variable.getRelativeAddress() + size) != 0x00L) {
 			size++;
 		}
 		return size;
