@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.ssof.structure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,26 +15,6 @@ import pt.ulisboa.tecnico.ssof.memory.StackMemory;
 
 public final class VulnerableFunctions {
 	private static final Logger logger = Logger.getLogger(VulnerableFunctions.class);
-
-	public static List<Vulnerability> fgets(Registers registers, StackMemory stackMemory, String InstructionPointer) {
-		List<Vulnerability> vulnerabilities = new ArrayList<>();
-		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
-		Long size = registers.read("rsi");
-
-		if(!variable.isPresent()) {
-			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
-			System.exit(-1);
-		}
-
-		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, false);
-
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {vuln.setFunctionName("fgets");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
-	}
 
 	public static List<Vulnerability> gets(Registers registers, StackMemory stackMemory, String InstructionPointer) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
@@ -52,6 +33,26 @@ public final class VulnerableFunctions {
 		        .distinct()
 		        .peek(vuln -> {
 		        	vuln.setFunctionName("gets");
+					vuln.setAddress(InstructionPointer);
+				}).collect(Collectors.toList());
+	}
+	
+	public static List<Vulnerability> fgets(Registers registers, StackMemory stackMemory, String InstructionPointer) {
+		List<Vulnerability> vulnerabilities = new ArrayList<>();
+		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
+		Long size = registers.read("rsi");
+
+		if(!variable.isPresent()) {
+			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
+			System.exit(-1);
+		}
+
+		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, false);
+
+		return vulnerabilities.stream()
+				.filter(Objects::nonNull)
+		        .distinct()
+		        .peek(vuln -> {vuln.setFunctionName("fgets");
 					vuln.setAddress(InstructionPointer);
 				}).collect(Collectors.toList());
 	}
@@ -182,7 +183,82 @@ public final class VulnerableFunctions {
 
     }
 
-	private static List<Vulnerability> searchGetsVulnerabilities(StackMemory stackMemory, Optional<Variable> variable, Long size,
+	public static List<Vulnerability> scanf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
+		List<Vulnerability> vulnerabilities = new ArrayList<>();
+		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rsi"));
+		Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("rdx"));
+				
+		if(!variable1.isPresent()) {
+			logger.fatal("Variable in address " + registers.read("rsi") + " not found.");
+			System.exit(-1);
+		}
+		Variable firstArgument = variable1.get();
+		if(variable2.isPresent() && variable2.get().getName() != null) {
+			firstArgument = variable2.get();
+		}
+
+		vulnerabilities = searchScanfVulnerabilities(stackMemory, firstArgument);
+
+		return vulnerabilities.stream()
+				.filter(Objects::nonNull)
+		        .distinct()
+		        .peek(vuln -> {
+		        	vuln.setFunctionName("__isoc99_scanf");
+					vuln.setAddress(InstructionPointer);
+				}).collect(Collectors.toList());
+	}
+	
+	public static List<Vulnerability> fscanf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
+		List<Vulnerability> vulnerabilities = new ArrayList<>();
+
+		Optional<Variable> file = stackMemory.getMappedVariable(registers.read("rdi"));
+		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rdx"));
+		Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("rcx"));
+		
+		if(!file.isPresent()) {
+			logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
+			System.exit(-1);
+		}
+		
+		if(!variable1.isPresent()) {
+			logger.fatal("Variable in address " + registers.read("rdx") + " not found.");
+			System.exit(-1);
+		}
+		Variable firstArgument = variable1.get();
+		if(variable2.isPresent() && variable2.get().getName() != null) {
+			firstArgument = variable2.get();
+		}
+
+		vulnerabilities = searchScanfVulnerabilities(stackMemory, firstArgument);
+
+		return vulnerabilities.stream()
+				.filter(Objects::nonNull)
+		        .distinct()
+		        .peek(vuln -> {
+		        	vuln.setFunctionName("__isoc99_fscanf");
+					vuln.setAddress(InstructionPointer);
+				}).collect(Collectors.toList());
+	}
+	
+	private static List<Vulnerability> searchScanfVulnerabilities (StackMemory stackMemory, Variable variable) {
+		List<Vulnerability> vulnerabilities = new ArrayList<>();
+		int size = Integer.MAX_VALUE;
+		
+		Vulnerability vulnerability;
+		System.out.println(variable.getRelativeAddress());
+		for(int i = 0; i < size; i++) {
+			vulnerability = stackMemory.writeByte(variable, variable.getRelativeAddress() + i, 0xFFL);
+			if(vulnerability != null &&
+				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
+				vulnerabilities.add(vulnerability);
+				break;
+			}
+			vulnerabilities.add(vulnerability);
+		}
+		return vulnerabilities;
+	}
+
+    private static List<Vulnerability> searchGetsVulnerabilities(StackMemory stackMemory, Optional<Variable> variable, Long size,
                                                                  boolean read) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		boolean scorruption = false;
