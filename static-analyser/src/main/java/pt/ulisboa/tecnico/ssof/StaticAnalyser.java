@@ -44,10 +44,10 @@ public class StaticAnalyser {
 
         Vulnerabilities vulnerabilities = executor.getVulnerabilities();
         
-        int startIndex = fileName.indexOf('/', 19) + 1;
-        int endIndex = fileName.indexOf('.', 19);
+        int startIndex = fileName.indexOf('/', 43) + 1;
+        int endIndex = fileName.indexOf('.', 43);
         String jsonFile = fileName.substring(startIndex, endIndex);
-        vulnerabilities.parseOutput("src/test/resources/" + jsonFile);
+        vulnerabilities.parseOutput(jsonFile);
     }
 
 }
