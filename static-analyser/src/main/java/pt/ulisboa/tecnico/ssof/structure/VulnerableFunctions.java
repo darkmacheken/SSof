@@ -267,6 +267,33 @@ public final class VulnerableFunctions {
 				}).collect(Collectors.toList()); 
 	}
 
+    public static List<Vulnerability> snprintf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
+        List<Vulnerability> vulnerabilities = new ArrayList<>();
+        Optional<Variable> variableDest = stackMemory.getMappedVariable(registers.read("rdi"));
+        Long size = registers.read("rsi");
+        Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rcx"));
+        Optional<Variable> variable2 = stackMemory.getMappedVariable(registers.read("r8"));
+
+        if(!variableDest.isPresent()) {
+            logger.fatal("Variable in address " + registers.read("rdi") + " not found.");
+            System.exit(-1);
+        }
+        if(!variable1.isPresent()) {
+            logger.fatal("Variable in address " + registers.read("rcx") + " not found.");
+            System.exit(-1);
+        }
+
+        vulnerabilities = searchSprintfVulnerabilities(stackMemory, variableDest, variable1, variable2, Math.toIntExact(size));
+
+        return vulnerabilities.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .peek(vuln -> {
+                    vuln.setFunctionName("snprintf");
+                    vuln.setAddress(InstructionPointer);
+                }).collect(Collectors.toList());
+    }
+
 	private static List<Vulnerability> searchScanfVulnerabilities (StackMemory stackMemory, Variable variable) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		int size = Integer.MAX_VALUE;
@@ -397,32 +424,52 @@ public final class VulnerableFunctions {
 			Optional<Variable> variableDest, Optional<Variable> variable1, Optional<Variable> variable2, int size) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		boolean scorruption = false;
+
+		int byteCounter = 0;
 		
 		int j = 0;
 		Vulnerability vulnerability;
 		for(int i = 0; i < getVariableStringSize(stackMemory, variable1.get()); i++) {
 			Long content = stackMemory.readByte(variable1.get().getRelativeAddress() + i);
 			vulnerability = stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + i, content);
+            byteCounter++;
 			if(vulnerability != null &&
 				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
+                vulnerabilities.add(vulnerability);
 				scorruption = true;
 				break;
 			}
-			vulnerabilities.add(vulnerability);
+
+            if (byteCounter == size - 1){
+                vulnerabilities.add(stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + i + 1, 0x00L));
+                break;
+            }
+
+            vulnerabilities.add(vulnerability);
 			j = i;
 		}
-		if(scorruption ||
-			!(variable2.isPresent() && variable2.get().getName() != null)) {
+		if(scorruption) {
  			return vulnerabilities;
- 		}
+ 		} else if(!(variable2.isPresent() && variable2.get().getName() != null)){
+            vulnerabilities.add(stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + j, 0x00L));
+            return vulnerabilities;
+        }
+
 		for(int i = 0; i < getVariableStringSize(stackMemory, variable2.get()); i++) {
 			Long content = stackMemory.readByte(variable2.get().getRelativeAddress() + i);
 			vulnerability = stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + j + i, content);
+            byteCounter++;
 			if(vulnerability != null &&
 				StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")) {
-				scorruption = true;
+                vulnerabilities.add(vulnerability);
 				break;
 			}
+
+			if (byteCounter == size - 1){
+                vulnerabilities.add(stackMemory.writeByte(variableDest.get(), variableDest.get().getRelativeAddress() + j + i + 1, 0x00L));
+                break;
+            }
+
 			vulnerabilities.add(vulnerability);
 		}
 		return vulnerabilities;
