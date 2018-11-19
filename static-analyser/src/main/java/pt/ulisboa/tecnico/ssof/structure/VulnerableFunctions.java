@@ -27,14 +27,8 @@ public final class VulnerableFunctions {
 		}
 
 		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, false);
-
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("gets");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		
+		return filterVulnerabilities(vulnerabilities, "gets", InstructionPointer);
 	}
 	
 	public static List<Vulnerability> fgets(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -49,12 +43,7 @@ public final class VulnerableFunctions {
 
 		vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, false);
 
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {vuln.setFunctionName("fgets");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		return filterVulnerabilities(vulnerabilities, "fgets", InstructionPointer);
 	}
 
 	public static List<Vulnerability> strcpy(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -73,14 +62,8 @@ public final class VulnerableFunctions {
 		Long limit = (long) getVariableStringSize(stackMemory, variableSource.get()) + 1;
 		vulnerabilities = searchStrcpyVulnerabilities(stackMemory, variableSource.get(),
 			variableDestination.get(), limit);
-
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("strcpy");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		
+		return filterVulnerabilities(vulnerabilities, "strcpy", InstructionPointer);
 	}
 
 	public static List<Vulnerability> strncpy(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -100,13 +83,7 @@ public final class VulnerableFunctions {
 		vulnerabilities = searchStrcpyVulnerabilities(stackMemory, variableSource.get(),
 			variableDestination.get(), size);
 
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("strncpy");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		return filterVulnerabilities(vulnerabilities, "strncpy", InstructionPointer);
 	}
 
 	public static List<Vulnerability> strcat(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -126,14 +103,8 @@ public final class VulnerableFunctions {
 		Long limit = (long) getVariableStringSize(stackMemory, variableSource.get()) + 1;
 		vulnerabilities = searchStrcatVulnerabilities(stackMemory, variableSource.get(),
 			variableDestination.get(), limit);
-
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("strcat");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		
+		return filterVulnerabilities(vulnerabilities, "strcat", InstructionPointer);
 	}
 
 	public static List<Vulnerability> strncat(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -152,14 +123,8 @@ public final class VulnerableFunctions {
 		Long size = registers.read("rdx");
 		vulnerabilities = searchStrcatVulnerabilities(stackMemory, variableSource.get(),
 			variableDestination.get(), size);
-
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("strncat");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		
+		return filterVulnerabilities(vulnerabilities, "strncat", InstructionPointer);
 	}
 
     public static List<Vulnerability> read(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -174,13 +139,7 @@ public final class VulnerableFunctions {
 
         vulnerabilities = searchGetsVulnerabilities(stackMemory, variable, size, true);
 
-        return vulnerabilities.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .peek(vuln -> {vuln.setFunctionName("read");
-                    vuln.setAddress(InstructionPointer);
-                }).collect(Collectors.toList());
-
+        return filterVulnerabilities(vulnerabilities, "read", InstructionPointer);
     }
 
 	public static List<Vulnerability> scanf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -199,13 +158,7 @@ public final class VulnerableFunctions {
 
 		vulnerabilities = searchScanfVulnerabilities(stackMemory, firstArgument);
 
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("__isoc99_scanf");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		return filterVulnerabilities(vulnerabilities, "__isoc99_scanf", InstructionPointer);
 	}
 	
 	public static List<Vulnerability> fscanf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -231,13 +184,7 @@ public final class VulnerableFunctions {
 
 		vulnerabilities = searchScanfVulnerabilities(stackMemory, firstArgument);
 
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("__isoc99_fscanf");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList());
+		return filterVulnerabilities(vulnerabilities, "__isoc99_fscanf", InstructionPointer);
 	}
 
 	public static List<Vulnerability> sprintf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -258,13 +205,7 @@ public final class VulnerableFunctions {
 		int size = Integer.MAX_VALUE;
 		vulnerabilities = searchSprintfVulnerabilities(stackMemory, variableDest, variable1, variable2, size);
 		
-		return vulnerabilities.stream()
-				.filter(Objects::nonNull)
-		        .distinct()
-		        .peek(vuln -> {
-		        	vuln.setFunctionName("sprintf");
-					vuln.setAddress(InstructionPointer);
-				}).collect(Collectors.toList()); 
+		return filterVulnerabilities(vulnerabilities, "sprintf", InstructionPointer);
 	}
 
     public static List<Vulnerability> snprintf(Registers registers, StackMemory stackMemory, String InstructionPointer) {
@@ -285,15 +226,9 @@ public final class VulnerableFunctions {
 
         vulnerabilities = searchSprintfVulnerabilities(stackMemory, variableDest, variable1, variable2, Math.toIntExact(size));
 
-        return vulnerabilities.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .peek(vuln -> {
-                    vuln.setFunctionName("snprintf");
-                    vuln.setAddress(InstructionPointer);
-                }).collect(Collectors.toList());
+        return filterVulnerabilities(vulnerabilities, "snprintf", InstructionPointer);
     }
-
+    
 	private static List<Vulnerability> searchScanfVulnerabilities (StackMemory stackMemory, Variable variable) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		int size = Integer.MAX_VALUE;
@@ -488,5 +423,20 @@ public final class VulnerableFunctions {
 		}
 		return size;
 	}
+	
+	/**
+	 * This method returns the list of vulnerabilites without null objects and duplicates and sets the function name
+	 * and instruction pointer for each vulnerability
+	 */
+	private static List<Vulnerability> filterVulnerabilities (List<Vulnerability> vulnerabilities, String functionName, 
+    		String InstructionPointer) {
+    	return vulnerabilities.stream()
+        .filter(Objects::nonNull)
+        .distinct()
+        .peek(vuln -> {
+            vuln.setFunctionName(functionName);
+            vuln.setAddress(InstructionPointer);
+        }).collect(Collectors.toList());
+    }
 
 }
