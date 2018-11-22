@@ -1,9 +1,18 @@
 # SSof
 Software Security Project
 
-Prerequisites:
+## Prerequisites:
+Have installed the following tools:
 - Maven 3.x.x
 - JDK 8+
 
-To compile, execute compile.sh
-To run, execute run.sh <program.json>
+## How to compile
+Execute the following command
+```
+./compile.sh
+```
+## How to run
+Execute the following command
+```
+./run.sh <program.json>
+```
