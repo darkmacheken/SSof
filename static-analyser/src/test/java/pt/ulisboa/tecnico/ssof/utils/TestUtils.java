@@ -22,7 +22,7 @@ public final class TestUtils {
 	
 	@SuppressWarnings("resource")
 	private static void doTest(String fileName, String testFolder) throws JSONException {
-		InputStream expectedIS = TestUtils.class.getResourceAsStream("/" + testFolder + "/" + fileName + ".output.json");
+		InputStream expectedIS = TestUtils.class.getResourceAsStream("/" + "test_results" + "/" + fileName + ".output.json");
 		Scanner expectedScanner = new Scanner(expectedIS).useDelimiter("\\A");
 	    String expectedJsonData = expectedScanner.hasNext() ? expectedScanner.next() : "";
 	    
@@ -30,7 +30,7 @@ public final class TestUtils {
 	    args[0] = "src/test/resources/" + testFolder + "/" + fileName + ".json";
 	    StaticAnalyser.main(args);
 	    
-		InputStream resultIS = TestUtils.class.getResourceAsStream("/" + fileName + ".output.json");
+		InputStream resultIS = TestUtils.class.getResourceAsStream("/" + testFolder + "/" + fileName + ".output.json");
 		Scanner resultScanner = new Scanner(resultIS).useDelimiter("\\A");
 	    String resultJsonData = resultScanner.hasNext() ? resultScanner.next() : "";
 

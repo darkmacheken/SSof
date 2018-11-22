@@ -45,7 +45,7 @@ public class StaticAnalyser {
 
         Vulnerabilities vulnerabilities = executor.getVulnerabilities();
         
-        String jsonFile = FilenameUtils.getBaseName(fileName);
+        String jsonFile = FilenameUtils.removeExtension(fileName);
         vulnerabilities.parseOutput(jsonFile);
     }
 
