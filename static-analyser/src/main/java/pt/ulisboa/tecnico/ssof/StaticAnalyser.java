@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.apache.commons.io.FilenameUtils;
 import pt.ulisboa.tecnico.ssof.structure.Vulnerabilities;
 import pt.ulisboa.tecnico.ssof.structure.graph.Graph;
 import pt.ulisboa.tecnico.ssof.structure.operations.Function;
@@ -23,7 +24,7 @@ public class StaticAnalyser {
 			logger.fatal("One parameter is expected but " + args.length + " were given.");
 	        System.exit(-1);
 		}
-
+		
 		StringBuilder jsonObject = new StringBuilder();
 		String fileName = args[0];
 	    try {
@@ -44,9 +45,7 @@ public class StaticAnalyser {
 
         Vulnerabilities vulnerabilities = executor.getVulnerabilities();
         
-        int startIndex = fileName.indexOf('/', 43) + 1;
-        int endIndex = fileName.indexOf('.', 43);
-        String jsonFile = fileName.substring(startIndex, endIndex);
+        String jsonFile = FilenameUtils.getBaseName(fileName);
         vulnerabilities.parseOutput(jsonFile);
     }
 
