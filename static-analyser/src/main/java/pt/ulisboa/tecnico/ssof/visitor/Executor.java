@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -40,20 +41,28 @@ public class Executor implements Visitor {
 
     private final List<Vulnerability> vulnerabilities;
 
+    private String stackCorruptionFunction;
+    private Stack<String> currentFunction;
+
     public Executor(Map<String, Function> functions){
         this.functions = functions;
         this.registers = new Registers();
         this.memory = new StackMemory();
         this.vulnerabilities = new ArrayList<>();
+        this.currentFunction = new Stack<>();
 
-        memory.startStackFrame(functions.get("main"));
+        this.memory.startStackFrame(functions.get("main"));
+        this.currentFunction.push("main");
     }
 
-    public Executor(Executor executor){
+    private Executor(Executor executor){
         this.functions = executor.functions;
         this.registers = new Registers(executor.registers);
         this.memory = new StackMemory(executor.memory);
         this.vulnerabilities = new ArrayList<>();
+        this.stackCorruptionFunction = executor.stackCorruptionFunction;
+        this.currentFunction = new Stack<>();
+        currentFunction.addAll(executor.currentFunction);
     }
 
     @Override
@@ -71,6 +80,7 @@ public class Executor implements Visitor {
                     Executor executor = new Executor(this);
                     basicBlockl.accept(executor);
                     this.vulnerabilities.addAll(executor.getVulnerabilities().getVulnerabilitiesList());
+                    stackCorruptionFunction = executor.stackCorruptionFunction;
                 }
         }
     }
@@ -148,7 +158,9 @@ public class Executor implements Visitor {
                         VulnerableFunctions.read(registers, memory, call.getAddress()));
                 break;
             default:
+                checkStackCorruption();
                 memory.startStackFrame(functions.get(name.substring(1, name.length() - 1)));
+                currentFunction.push(call.getFunctionName().substring(1, call.getFunctionName().length() - 1));
         }
     }
 
@@ -220,6 +232,8 @@ public class Executor implements Visitor {
     public void visitRet(Ret ret) {
         memory.endStackFrame();
         registers.write("rsp", memory.getStackPointer());
+        checkStackCorruption();
+        currentFunction.pop();
     }
 
     @Override
@@ -247,6 +261,26 @@ public class Executor implements Visitor {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
+
+        if(stackCorruptionFunction != null){
+            List<Vulnerability> vulnsStackCorruption = vulns.stream()
+                    .filter(vulnerability -> vulnerability.getVulnerableFunction().equals(stackCorruptionFunction))
+                    .collect(Collectors.toList());
+            return new Vulnerabilities(vulnsStackCorruption);
+        }
+
         return new Vulnerabilities(vulns);
+    }
+
+    private void checkStackCorruption() {
+        boolean existsStackCorruption = this.vulnerabilities.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(Vulnerability::getVulnerabilityType)
+                .anyMatch(s -> s.equals("SCORRUPTION"));
+
+        if(existsStackCorruption && stackCorruptionFunction == null){
+            stackCorruptionFunction = currentFunction.peek();
+        }
     }
 }
