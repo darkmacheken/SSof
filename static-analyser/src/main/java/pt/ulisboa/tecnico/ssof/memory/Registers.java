@@ -25,7 +25,12 @@ public class Registers {
         initializeRegisters(registers);
     }
 
-    public void write(String register, Long value) {
+	/**
+	 * Stores the value in the register
+	 * @param register is the name of the register
+	 * @param value is the value to store in the register
+	 */
+	public void write(String register, Long value) {
 		Long valueToWrite;
 		MutablePair<String, Long> registerMapValue = registersMap.get(register);
 		if(registerMapValue == null) {
@@ -44,7 +49,12 @@ public class Registers {
 		}
 		this.registersBank.put(registerMapValue.getLeft(), valueToWrite);
 	}
-	
+
+	/**
+	 * Returns the value stored in the register.
+	 * @param register is the name of the register
+	 * @return the value stored in the register
+	 */
 	public Long read(String register) {
 		MutablePair<String, Long> registerMapValue = registersMap.get(register);
 		if(registerMapValue == null) {

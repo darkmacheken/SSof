@@ -15,6 +15,13 @@ public final class VulnerableFunctions {
 
 	private VulnerableFunctions(){}
 
+	/**
+	 * Reproduces the c function gets and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> gets(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -29,7 +36,14 @@ public final class VulnerableFunctions {
 		
 		return filterVulnerabilities(vulnerabilities, "gets", instructionPointer);
 	}
-	
+
+	/**
+	 * Reproduces the c function fgets and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> fgets(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -45,6 +59,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "fgets", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function strcpy and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> strcpy(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variableDestination = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -69,6 +90,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "strcpy", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function strncpy and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> strncpy(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variableDestination = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -92,6 +120,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "strncpy", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function strcat and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> strcat(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variableDestination = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -117,6 +152,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "strcat", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function strncat and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> strncat(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variableDestination = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -141,6 +183,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "strncat", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function read and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
     public static List<Vulnerability> read(Registers registers, StackMemory stackMemory, String instructionPointer) {
         List<Vulnerability> vulnerabilities;
         Optional<Variable> variable = stackMemory.getMappedVariable(registers.read("rsi"));
@@ -156,6 +205,13 @@ public final class VulnerableFunctions {
         return filterVulnerabilities(vulnerabilities, "read", instructionPointer);
     }
 
+	/**
+	 * Reproduces the c function scanf and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> scanf(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 		Optional<Variable> variable1 = stackMemory.getMappedVariable(registers.read("rsi"));
@@ -174,7 +230,14 @@ public final class VulnerableFunctions {
 
 		return filterVulnerabilities(vulnerabilities, "__isoc99_scanf", instructionPointer);
 	}
-	
+
+	/**
+	 * Reproduces the c function fscanf and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> fscanf(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities;
 
@@ -201,6 +264,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "__isoc99_fscanf", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function sprintf and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
 	public static List<Vulnerability> sprintf(Registers registers, StackMemory stackMemory, String instructionPointer) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		Optional<Variable> variableDest = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -239,6 +309,13 @@ public final class VulnerableFunctions {
 		return filterVulnerabilities(vulnerabilities, "sprintf", instructionPointer);
 	}
 
+	/**
+	 * Reproduces the c function snprintf and returns the vulnerabilities found.
+	 * @param registers registers model object
+	 * @param stackMemory stack memory model object
+	 * @param instructionPointer current address of the RIP
+	 * @return vulnerabilities found.
+	 */
     public static List<Vulnerability> snprintf(Registers registers, StackMemory stackMemory, String instructionPointer) {
         List<Vulnerability> vulnerabilities = new ArrayList<>();
         Optional<Variable> variableDest = stackMemory.getMappedVariable(registers.read("rdi"));
@@ -308,50 +385,6 @@ public final class VulnerableFunctions {
         return vulnerabilities;
     }
 
-    /**
-     * This function behaves like the c strncpy
-     * @param stackMemory the memory to perform the strncpy
-     * @param appendNull it will write a null byte after the last write if true
-     * @param variableDestination variable of destination (to check vulnerabilities)
-     * @param positionDestination relative memory position to where start to copy
-     * @param positionSource relative memory position from where start to copy
-     * @param n number of bytes to write (if appendNull is true, it will write n + 1 bytes)
-     * @return
-     */
-    private static List<Vulnerability> strncpy(StackMemory stackMemory, boolean appendNull, Variable variableDestination, int positionDestination, int positionSource, int n){
-	    List<Vulnerability> vulnerabilities = new ArrayList<>();
-
-	    Vulnerability vulnerability = null;
-	    Long readValue;
-	    do {
-	        if(n==0 || (vulnerability != null && StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION"))){
-	            return vulnerabilities;
-            }
-
-            readValue = stackMemory.readByte(positionSource);
-	        vulnerability = stackMemory.writeByte(variableDestination, positionDestination, readValue);
-	        positionSource++;
-	        positionDestination++;
-	        n--;
-            vulnerabilities.add(vulnerability);
-        } while(readValue != 0);
-
-	    while(n != 0){
-	        if(vulnerability != null && StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")){
-	            return vulnerabilities;
-            }
-            vulnerability = stackMemory.writeByte(variableDestination, positionDestination, 0x00L);
-	        positionDestination++;
-	        n--;
-	        vulnerabilities.add(vulnerability);
-        }
-        if(appendNull){
-            vulnerability = stackMemory.writeByte(variableDestination, positionDestination, 0x00L);
-            vulnerabilities.add(vulnerability);
-        }
-        return vulnerabilities;
-    }
-
 	private static List<Vulnerability> searchScanfVulnerabilities (StackMemory stackMemory, Variable variable) {
 		List<Vulnerability> vulnerabilities = new ArrayList<>();
 		int size = Integer.MAX_VALUE;
@@ -370,7 +403,55 @@ public final class VulnerableFunctions {
 	}
 
 	/**
-	 * This method returns the length of the string saved in the variable (until \0)
+	 * This function behaves like the c strncpy
+	 * @param stackMemory the memory to perform the strncpy
+	 * @param appendNull it will write a null byte after the last write if true
+	 * @param variableDestination variable of destination (to check vulnerabilities)
+	 * @param positionDestination relative memory position to where start to copy
+	 * @param positionSource relative memory position from where start to copy
+	 * @param n number of bytes to write (if appendNull is true, it will write n + 1 bytes)
+	 * @return
+	 */
+	private static List<Vulnerability> strncpy(StackMemory stackMemory, boolean appendNull, Variable variableDestination,
+											   int positionDestination, int positionSource, int n){
+		List<Vulnerability> vulnerabilities = new ArrayList<>();
+
+		Vulnerability vulnerability = null;
+		Long readValue;
+		do {
+			if(n==0 || (vulnerability != null && StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION"))){
+				return vulnerabilities;
+			}
+
+			readValue = stackMemory.readByte(positionSource);
+			vulnerability = stackMemory.writeByte(variableDestination, positionDestination, readValue);
+			positionSource++;
+			positionDestination++;
+			n--;
+			vulnerabilities.add(vulnerability);
+		} while(readValue != 0);
+
+		while(n != 0){
+			if(vulnerability != null && StringUtils.equals(vulnerability.getVulnerabilityType(), "SCORRUPTION")){
+				return vulnerabilities;
+			}
+			vulnerability = stackMemory.writeByte(variableDestination, positionDestination, 0x00L);
+			positionDestination++;
+			n--;
+			vulnerabilities.add(vulnerability);
+		}
+		if(appendNull){
+			vulnerability = stackMemory.writeByte(variableDestination, positionDestination, 0x00L);
+			vulnerabilities.add(vulnerability);
+		}
+		return vulnerabilities;
+	}
+
+	/**
+	 * Calculates the length of a given string (until \0)
+	 * @param stackMemory stack memory model
+	 * @param variable variable to string len
+	 * @return the length of the string
 	 */
 	private static int strlen(StackMemory stackMemory, Variable variable) {
 		int size = 0;

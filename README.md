@@ -1,5 +1,5 @@
 # SSof
-Software Security Project
+Software Security Project. The report is located at **/docs/SSof-Report.pdf**
 
 ## Prerequisites:
 Have installed the following tools:
@@ -16,3 +16,5 @@ Execute the following command
 ```
 ./run.sh <program.json>
 ```
+## Notes
+- The output will be generated in the directory where the input file is located.
