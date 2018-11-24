@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import pt.ulisboa.tecnico.ssof.structure.operands.Pointer;
+import pt.ulisboa.tecnico.ssof.utils.OperandsUtils;
 
 @JsonRootName("variables")
 public class Variable {
@@ -12,7 +14,7 @@ public class Variable {
 	private String type;
 	private String name;
 	private String address;
-	// relative address to rbp (it has the opposite signal)
+
 	private int relativeAddress;
 
 	public Variable() {}
@@ -26,7 +28,8 @@ public class Variable {
 		this.type = type;
 		this.name = name;
 		this.address = address;
-		this.relativeAddress = - NumberUtils.toInt(StringUtils.remove(address, "rbp"), 0);
+
+		this.relativeAddress = getOffset();
 	}
 	
 	public int getBytes() {
@@ -46,8 +49,17 @@ public class Variable {
 	}
 
 	public int getRelativeAddress() {
-		return relativeAddress;
+        return relativeAddress;
 	}
+
+    public void setRelativeAddress(int relativeAddress) {
+        this.relativeAddress = relativeAddress;
+    }
+
+    private int getOffset(){
+        Pointer pointer = (Pointer) OperandsUtils.parseOperand("[" + address + "]");
+        return pointer.getOffset();
+    }
 
 	public void incrementBytes(){
 		this.bytes += 1;

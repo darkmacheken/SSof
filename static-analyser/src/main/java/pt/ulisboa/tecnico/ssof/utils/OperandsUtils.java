@@ -12,7 +12,12 @@ import pt.ulisboa.tecnico.ssof.structure.operands.Register;
 public final class OperandsUtils {
 	
 	private OperandsUtils() {}
-	
+
+	/**
+	 * Transforms a strings representing an operand to an object Operand
+	 * @param operand is the operand string
+	 * @return the operand object represented in parameter operand
+	 */
 	public static Operand parseOperand(String operand) {
 		Pattern pointerPattern = Pattern.compile("\\[.+\\]");
 		Matcher pointerMatcher = pointerPattern.matcher(operand);

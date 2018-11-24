@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.ssof.memory;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.log4j.Logger;
 
@@ -20,7 +19,17 @@ public class Registers {
 		this.registersBank = new HashMap<>();
 		initializeRegisters();
 	}
-	
+
+	public Registers(Registers registers){
+        this.registersBank = new HashMap<>();
+        initializeRegisters(registers);
+    }
+
+	/**
+	 * Stores the value in the register
+	 * @param register is the name of the register
+	 * @param value is the value to store in the register
+	 */
 	public void write(String register, Long value) {
 		Long valueToWrite;
 		MutablePair<String, Long> registerMapValue = registersMap.get(register);
@@ -40,7 +49,12 @@ public class Registers {
 		}
 		this.registersBank.put(registerMapValue.getLeft(), valueToWrite);
 	}
-	
+
+	/**
+	 * Returns the value stored in the register.
+	 * @param register is the name of the register
+	 * @return the value stored in the register
+	 */
 	public Long read(String register) {
 		MutablePair<String, Long> registerMapValue = registersMap.get(register);
 		if(registerMapValue == null) {
@@ -71,6 +85,26 @@ public class Registers {
 		registersBank.put("r14", 0L);
 		registersBank.put("r15", 0L);
 	}
+
+    private void initializeRegisters(Registers registers) {
+        registersBank.put("rax", registers.read("rax"));
+        registersBank.put("rbx", registers.read("rbx"));
+        registersBank.put("rcx", registers.read("rcx"));
+        registersBank.put("rdx", registers.read("rdx"));
+        registersBank.put("rsi", registers.read("rsi"));
+        registersBank.put("rdi", registers.read("rdi"));
+        registersBank.put("rbp", registers.read("rbp"));
+        registersBank.put("rsp", registers.read("rsp"));
+        registersBank.put("rip", registers.read("rip"));
+        registersBank.put("r8" , registers.read("r8"));
+        registersBank.put("r9" , registers.read("r9"));
+        registersBank.put("r10", registers.read("r10"));
+        registersBank.put("r11", registers.read("r11"));
+        registersBank.put("r12", registers.read("r12"));
+        registersBank.put("r13", registers.read("r13"));
+        registersBank.put("r14", registers.read("r14"));
+        registersBank.put("r15", registers.read("r15"));
+    }
 	
 	private static Map<String, MutablePair<String, Long>> createRegistersMap() {
 		Map<String, MutablePair<String, Long>> registersMap = new HashMap<>();

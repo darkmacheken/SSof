@@ -34,10 +34,27 @@ public class StackMemory {
     public StackMemory() {
         // memory is initialized with 8 bytes(initialized with 0xFF) of unmapped memory just to avoid IndexOutOfBound
         this.memory = new LinkedList<>();
-        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(null, (byte) 0xFF)));
+        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(new Variable(), (byte) 0xFF)));
 
         this.calledFunctions = new Stack<>();
         this.stackBasePointer = new Stack<>();
+    }
+
+    public StackMemory(StackMemory stackMemory){
+        // copy memory
+        this.memory = stackMemory.memory.stream()
+                .map(MemoryPosition::new)
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        // copy functions
+        this.calledFunctions = new Stack<>();
+        this.calledFunctions.addAll(stackMemory.calledFunctions);
+        this.currentFunction = stackMemory.currentFunction;
+
+        // copy BP
+        this.stackBasePointer = new Stack<>();
+        this.stackBasePointer.addAll(stackMemory.stackBasePointer);
+        this.currentBasePointer = stackMemory.currentBasePointer;
     }
 
     /**
@@ -56,7 +73,7 @@ public class StackMemory {
     public void startStackFrame(Function function){
         this.calledFunctions.push(function);
         this.currentFunction = function;
-        Variable retVar = new Variable(8, "ret", "retAddress", "rbp+8");
+        Variable retVar = new Variable(8, "ret", "retAddress", "rbp+0x8");
 
         IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(retVar, (byte) 0xFF)));
     }
@@ -77,11 +94,16 @@ public class StackMemory {
 
         // POP current BP and set current  BP to previous
         stackBasePointer.pop();
-        currentBasePointer = stackBasePointer.peek();
+        if(!stackBasePointer.empty()){
+            currentBasePointer = stackBasePointer.peek();
+        }
+
 
         // POP current function and set current function to previous
         calledFunctions.pop();
-        currentFunction = calledFunctions.peek();
+        if(!calledFunctions.empty()){
+            currentFunction = calledFunctions.peek();
+        }
     }
 
     /**
@@ -106,7 +128,7 @@ public class StackMemory {
      */
     public Long push(Long value){
         byte[] bytes = ByteBuffer.allocate(8).putLong(value).array();
-        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(null, bytes[i])));
+        IntStream.range(0,8).forEach(i -> memory.addLast(new MemoryPosition(new Variable(), bytes[i])));
         return getStackPointer();
     }
 
@@ -116,7 +138,7 @@ public class StackMemory {
      * @return the new stack pointer index
      */
     public Long allocate(int numBytes){
-        IntStream.range(0, numBytes).forEach(i -> memory.addLast(new MemoryPosition(null, (byte) 0x00)));
+        IntStream.range(0, numBytes).forEach(i -> memory.addLast(new MemoryPosition(new Variable(), (byte) 0x00)));
         return getStackPointer();
     }
 
@@ -153,8 +175,8 @@ public class StackMemory {
     public void mapMemory(){
         // Map variables
         for(Variable variable : currentFunction.getVariables()){
-            int endIndex = currentBasePointer + variable.getRelativeAddress();
-            int startIndex = endIndex - variable.getBytes();
+            int endIndex = currentBasePointer - variable.getRelativeAddress();
+            int startIndex = endIndex - variable.getBytes() + 1;
 
             memory.subList(startIndex, endIndex + 1)
                   .forEach(memoryPosition -> memoryPosition.setVariable(variable));
@@ -165,15 +187,24 @@ public class StackMemory {
         Variable currentUnmappedVariable = new Variable();
         for(int i = memory.size() - 1; i > currentBasePointer ; i--){
             MemoryPosition memoryPosition = memory.get(i);
-            if(memoryPosition.getVariable() == null){
-               if(i + 1 != indexLastByteUnmapped){
-                   currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-" + i);
-               } else {
-                   currentUnmappedVariable.incrementBytes();
-               }
-               indexLastByteUnmapped = i;
+
+            if(memoryPosition.getVariable().getType() == null){
+                if (i + 1 == indexLastByteUnmapped) {
+                    currentUnmappedVariable.incrementBytes();
+                } else {
+                    currentUnmappedVariable = new Variable(1,"unmapped", "unmapped", "rbp-0x" + Integer.toHexString(i-currentBasePointer));
+                }
+                indexLastByteUnmapped = i;
                memoryPosition.setVariable(currentUnmappedVariable);
-           }
+           } else if(StringUtils.equals(memoryPosition.getVariable().getType(), "unmapped")){
+                if (i + 1 == indexLastByteUnmapped) {
+                    memoryPosition.setVariable(currentUnmappedVariable);
+                    currentUnmappedVariable.incrementBytes();
+                } else {
+                    currentUnmappedVariable = memoryPosition.getVariable();
+                }
+                indexLastByteUnmapped = i;
+            }
         }
     }
 
@@ -184,7 +215,12 @@ public class StackMemory {
      * @throws IndexOutOfBoundsException if the position is not in memory.
      */
     public Long readByte(int position){
-        return (long) memory.get(currentBasePointer - position).getContent();
+        try{
+            return (long) memory.get(currentBasePointer - position).getContent();
+        } catch (IndexOutOfBoundsException e){
+            return 0L;
+        }
+
     }
 
     /**
@@ -199,7 +235,7 @@ public class StackMemory {
             return readByte(position);
         }
         int endIndex = currentBasePointer - position;
-        int startIndex = endIndex - numBytes;
+        int startIndex = endIndex - numBytes + 1;
 
         byte[] bytes = ArrayUtils.toPrimitive(
                 memory.subList(startIndex, endIndex + 1).stream()
@@ -219,7 +255,7 @@ public class StackMemory {
         int index = currentBasePointer - position;
         // out of the current stack frame
         if(index <= currentBasePointer - 16 || index >= memory.size()) {
-            String address = position < 0 ? "rbp-" + (-position) : "rbp+" + position;
+            String address = position < 0 ? "rbp-0x" + Integer.toHexString(-position) : "rbp+0x" + Integer.toHexString(position);
             return new Vulnerability("SCORRUPTION", currentFunction.getName(), address);
         }
 
@@ -282,11 +318,10 @@ public class StackMemory {
             logger.error("You can only write between 1 and 8 bytes.");
             return Collections.singletonList(writeByte(position, value));
         }
-        int index = currentBasePointer - position;
         byte[] bytes = Arrays.copyOfRange(ByteBuffer.allocate(8).putLong(value).array(), 8 - numBytes, 8);
 
         List<Vulnerability> vulnerabilities = new ArrayList<>();
-        for (int i = index , j = numBytes; j > 0; i--, j--){
+        for (int i = position, j = bytes.length - 1; j >= 0; i++, j--){
             vulnerabilities.add(writeByte(i, (long) bytes[j]));
         }
 
@@ -303,17 +338,27 @@ public class StackMemory {
      * @return an optional with the mapped variable. The optional will be empty if the memory appointed by index
      * is unmapped.
      */
-    public Optional<Variable> getMappedVariable(int index){
+    public Optional<Variable> getMappedVariable(Long index){
         if(index < 0 || index >= memory.size()){
             logger.error("Index out of memory.");
             return Optional.empty();
         }
 
-        Variable variable = memory.get(index).getVariable();
+        Variable variable = memory.get(Math.toIntExact(index)).getVariable();
         if(variable == null){
             return Optional.empty();
         } else {
+            variable.setRelativeAddress((int) (currentBasePointer - index));
             return Optional.of(variable);
         }
+    }
+
+    /**
+     * Returns the absolute index of the memory position. Doesn't check boundaries.
+     * @param position is relative to the current RBP
+     * @return the absolute index of the memory position
+     */
+    public Long getIndex(int position){
+        return (long) this.currentBasePointer - position;
     }
 }
