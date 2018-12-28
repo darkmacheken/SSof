@@ -1,10 +1,10 @@
 # SSof
 Software Security Project. The report is located at **/docs/SSof-Report.pdf**
 
-## Prerequisites:
+## Requirements:
 Have installed the following tools:
 - Maven 3.x.x
-- JDK 8+
+- Java Development Kit 8+ (JDK 8+)
 
 ## How to compile
 Execute the following command
