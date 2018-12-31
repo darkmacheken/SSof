@@ -1,5 +1,7 @@
 # SSof
-Software Security Project. The report is located at **/docs/SSof-Report.pdf**
+Software Security Project - Static Analyser
+
+The report is located at **/docs/SSof-Report.pdf**
 
 ## Requirements:
 Have installed the following tools:
