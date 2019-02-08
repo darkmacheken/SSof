@@ -1,4 +1,4 @@
-# SSof
+# SSof - 2018/2019
 Software Security Project - Static Analyser
 
 The report is located at **/docs/SSof-Report.pdf**
